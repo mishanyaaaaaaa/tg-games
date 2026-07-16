@@ -70,11 +70,6 @@
     position: relative;
 }
 
-/* Класс, который переворачивает ячейку при получении сигнала */
-.cell.revealed {
-    transform: rotateY(180deg);
-}
-
 /* Контейнер для звезды внутри перевернутой ячейки */
 .star-container {
     position: absolute;
@@ -86,7 +81,7 @@
     align-items: center;
     justify-content: center;
     /* Затемняем фон ячейки и делаем золотое свечение сзади звезды */
-    background: radial-gradient(circle, rgba(255, 153, 0, 0.25) 0%, rgba(10, 20, 38, 0.9) 80%);
+    background: radial-gradient(circle, rgba(255, 153, 0, 0.2) 0%, rgba(10, 20, 38, 0.85) 80%);
     border-radius: inherit;
     backface-visibility: hidden;
     transform: rotateY(180deg); /* Компенсируем переворот самой ячейки */
@@ -95,15 +90,14 @@
 
 /* Стили для самой 3D-звезды */
 .star-icon {
-    width: 85%;
-    height: 85%;
-    /* Добавляем сочную неоновую тень вокруг звезды */
-    filter: drop-shadow(0 0 10px rgba(255, 115, 0, 0.8)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
-    animation: starAppear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    width: 80%;
+    height: 80%;
+    filter: drop-shadow(0 0 8px rgba(255, 165, 0, 0.9)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+    animation: starAppear 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
 
 @keyframes starAppear {
-    0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+    0% { transform: scale(0) rotate(-10deg); opacity: 0; }
     100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 </style>
@@ -111,6 +105,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const playBtn = document.getElementById("playButton");
+
     if (playBtn) {
         playBtn.removeAttribute("disabled");
         playBtn.style.opacity = "1";
@@ -121,24 +116,22 @@ document.addEventListener("DOMContentLoaded", function() {
             
             if (playBtn.classList.contains("animating")) return;
             playBtn.classList.add("animating");
-            playBtn.style.opacity = "0.6";
 
             const cells = document.querySelectorAll(".cell");
             if (cells.length === 0) {
                 playBtn.classList.remove("animating");
-                playBtn.style.opacity = "1";
                 return;
             }
 
-            // 1. Очищаем поле от старых звезд
+            // 1. Полностью очищаем все ячейки перед новым раундом
             cells.forEach(cell => {
-                cell.classList.remove("revealed");
-                cell.style.transform = "";
-                const container = cell.querySelector(".star-container");
-                if (container) container.remove();
+                cell.classList.remove("revealed", "has-star");
+                cell.style.transform = ""; 
+                const customStar = cell.querySelector(".star-container");
+                if (customStar) customStar.remove();
             });
 
-            // 2. Генерируем случайные индексы для 5 звёзд
+            // 2. Всегда генерируем ровно 5 уникальных звёзд
             const starIndices = [];
             while (starIndices.length < 5) {
                 const randIndex = Math.floor(Math.random() * cells.length);
@@ -147,49 +140,46 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
 
-            // 3. Поочередно открываем качественные звезды с задержкой
+            // 3. Поочередно открываем 5 ячеек с анимацией и гарантированным показом звёзд
             let delay = 0;
             starIndices.forEach((index, i) => {
                 setTimeout(() => {
                     const cell = cells[index];
                     
+                    // Создаем контейнер со звездой напрямую через SVG без ломающихся символов
                     const container = document.createElement("div");
                     container.className = "star-container";
-                    
-                    // Высококачественная SVG звезда с градиентами, объемом и точной разметкой
                     container.innerHTML = `
                         <svg class="star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <defs>
-                                <linearGradient id="starGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stop-color="#FF9900" />
-                                    <stop offset="50%" stop-color="#FFCC00" />
-                                    <stop offset="100%" stop-color="#FF5500" />
+                                <linearGradient id="goldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#FFB300" />
+                                    <stop offset="50%" stop-color="#FFDD00" />
+                                    <stop offset="100%" stop-color="#FF6600" />
                                 </linearGradient>
                             </defs>
                             <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" 
-                                  fill="url(#starGrad)" 
-                                  stroke="#FF3300" 
-                                  stroke-width="0.6" 
+                                  fill="url(#goldGrad)" 
+                                  stroke="#FF4500" 
+                                  stroke-width="0.5" 
                                   stroke-linejoin="round"/>
                         </svg>
                     `;
                     
                     cell.appendChild(container);
                     
-                    // Запускаем переворот ячейки
-                    cell.classList.add("revealed");
+                    // Переворачиваем ячейку
+                    cell.classList.add("revealed", "has-star");
                     cell.style.transform = "rotateY(180deg)";
 
                     if (i === starIndices.length - 1) {
                         setTimeout(() => {
                             playBtn.classList.remove("animating");
-                            playBtn.style.opacity = "1";
                         }, 400);
                     }
-
                 }, delay);
                 
-                delay += 350; // Скорость открытия звезд (350мс между каждой)
+                delay += 350; // Пауза между переворотами
             });
         });
     }

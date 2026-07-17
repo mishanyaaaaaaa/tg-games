@@ -106,12 +106,94 @@
         opacity: 1;
     }
 }
+
+/* Делаем стрелочки визуально кликабельными (добавляем курсор-руку) */
+.select-traps__btn, 
+[class*="btn_minus"], 
+[class*="btn_plus"],
+.select-traps img,
+.select-traps svg {
+    cursor: pointer !important;
+    user-select: none;
+}
 </style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const playBtn = document.getElementById("playButton");
 
+    // 1. ОПРЕДЕЛЯЕМ ПЕРЕМЕННЫЕ ДЛЯ СЧЕТЧИКА МИН
+    const trapValues = [1, 3, 5, 7];
+    let currentLevelIndex = 0; // Начинаем с 1 мины (индекс 0)
+
+    // Ищем текстовое поле, где отображается цифра
+    const trapsAmountEl = document.getElementById("trapsAmount") || 
+                          document.querySelector(".select-traps__traps_amount") ||
+                          document.querySelector("[data-traps]") ||
+                          document.querySelector(".traps-count") ||
+                          document.querySelector(".select-traps__container span") ||
+                          document.querySelector(".select-traps span");
+
+    // 2. ОЖИВЛЯЕМ СТРЕЛОЧКИ КЛИКАМИ
+    // Ищем левую стрелочку (минус / назад)
+    const btnMinus = document.querySelector(".select-traps__btn_minus") || 
+                     document.querySelector("[class*='minus']") || 
+                     document.querySelector("[class*='prev']") ||
+                     (trapsAmountEl ? trapsAmountEl.previousElementSibling : null);
+
+    // Ищем правую стрелочку (плюс / вперед)
+    const btnPlus = document.querySelector(".select-traps__btn_plus") || 
+                    document.querySelector("[class*='plus']") || 
+                    document.querySelector("[class*='next']") ||
+                    (trapsAmountEl ? trapsAmountEl.nextElementSibling : null);
+
+    // Функция обновления текста на экране
+    function updateTrapsDisplay() {
+        if (trapsAmountEl) {
+            // Если внутри элемента просто число, меняем его. 
+            // Если там сложная структура, меняем только цифру, сохраняя текст вроде "traps"
+            const currentVal = trapValues[currentLevelIndex];
+            if (trapsAmountEl.childNodes.length > 1) {
+                // Если там внутри есть теги (например, перенос строки), ищем именно текстовый узел с цифрой
+                for (let node of trapsAmountEl.childNodes) {
+                    if (node.nodeType === Node.TEXT_NODE && /\d/.test(node.nodeValue)) {
+                        node.nodeValue = currentVal;
+                        break;
+                    } else if (node.tagName === "SPAN" || node.className && node.className.includes("amount")) {
+                        node.textContent = currentVal;
+                        break;
+                    }
+                }
+            } else {
+                trapsAmountEl.textContent = currentVal;
+            }
+        }
+    }
+
+    // Клик на ЛЕВУЮ стрелочку (уменьшение мин)
+    if (btnMinus) {
+        btnMinus.addEventListener("click", function(e) {
+            e.preventDefault();
+            if (currentLevelIndex > 0) {
+                currentLevelIndex--;
+                updateTrapsDisplay();
+            }
+        });
+    }
+
+    // Клик на ПРАВУЮ стрелочку (увеличение мин)
+    if (btnPlus) {
+        btnPlus.addEventListener("click", function(e) {
+            e.preventDefault();
+            if (currentLevelIndex < trapValues.length - 1) {
+                currentLevelIndex++;
+                updateTrapsDisplay();
+            }
+        });
+    }
+
+
+    // 3. ЛОГИКА ИГРЫ ПРИ НАЖАТИИ PLAY
     if (playBtn) {
         playBtn.removeAttribute("disabled");
         playBtn.style.opacity = "1";
@@ -129,55 +211,31 @@ document.addEventListener("DOMContentLoaded", function() {
                 return;
             }
 
-            // 1. Очищаем поле перед новым раундом
+            // Очищаем поле
             cells.forEach(cell => {
                 cell.classList.remove("revealed", "has-star");
                 const customStar = cell.querySelector(".star-container");
                 if (customStar) customStar.remove();
             });
 
-            // 2. Ищем элемент счетчика мин на экране
-            const trapsElement = document.getElementById("trapsAmount") || 
-                                 document.querySelector(".select-traps__traps_amount") ||
-                                 document.querySelector("[data-traps]") ||
-                                 document.querySelector(".traps-count") ||
-                                 // Поиск по структуре: блок внутри .select-traps, где лежит число
-                                 document.querySelector(".select-traps__container span") ||
-                                 document.querySelector(".select-traps span");
+            // Считываем текущее выбранное число мин
+            const activeTraps = trapValues[currentLevelIndex];
 
-            let trapsCount = 1; // Дефолтное значение
-
-            if (trapsElement) {
-                const text = trapsElement.textContent || trapsElement.innerText;
-                const parsed = parseInt(text.replace(/\D/g, ""), 10);
-                if (!isNaN(parsed) && parsed > 0) {
-                    trapsCount = parsed;
-                }
-            }
-
-            // 3. Высчитываем строгое количество звезд по твоей схеме:
-            let starsToOpen = 5; //Fallback на случай непредвиденных цифр
-
-            if (trapsCount === 1) {
+            // Вычисляем количество звёзд по твоей схеме
+            let starsToOpen = 5;
+            if (activeTraps === 1) {
                 starsToOpen = 7;
-            } else if (trapsCount === 3) {
+            } else if (activeTraps === 3) {
                 starsToOpen = 5;
-            } else if (trapsCount === 5) {
+            } else if (activeTraps === 5) {
                 starsToOpen = 4;
-            } else if (trapsCount === 7) {
+            } else if (activeTraps === 7) {
                 starsToOpen = 3;
-            } else {
-                // Если вдруг кликнули на какое-то другое число (например, четное), подстроим логику:
-                if (trapsCount < 3) starsToOpen = 7;
-                else if (trapsCount < 5) starsToOpen = 5;
-                else if (trapsCount < 7) starsToOpen = 4;
-                else starsToOpen = 3;
             }
 
-            // Ограничиваем количество звезд размером сетки на всякий пожарный
             if (starsToOpen > cells.length) starsToOpen = cells.length;
 
-            // 4. Генерируем случайные уникальные ячейки для вычисленного количества звезд
+            // Генерируем случайные уникальные ячейки
             const starIndices = [];
             while (starIndices.length < starsToOpen) {
                 const randIndex = Math.floor(Math.random() * cells.length);
@@ -186,7 +244,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
 
-            // 5. Поочередно создаем и открываем звезды
+            // Поочередно создаем и открываем звезды
             let delay = 0;
             starIndices.forEach((index, i) => {
                 setTimeout(() => {
@@ -216,7 +274,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     cell.appendChild(container);
                     cell.classList.add("revealed", "has-star");
 
-                    // Разблокируем кнопку "Play" после отрисовки последней звезды
                     if (i === starIndices.length - 1) {
                         setTimeout(() => {
                             playBtn.classList.remove("animating");
@@ -224,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 }, delay);
                 
-                delay += 350; // Интервал между открытиями звезд (0.35 сек)
+                delay += 350;
             });
         });
     }

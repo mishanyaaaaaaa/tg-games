@@ -81,7 +81,7 @@
     align-items: center;
     justify-content: center;
     /* Мягкий темный фон под звездой для контраста */
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.3) 0%, rgba(10, 20, 38, 0.6) 100%);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.25) 0%, rgba(10, 20, 38, 0.5) 100%);
     border-radius: inherit;
     z-index: 99;
     pointer-events: none;
@@ -90,12 +90,12 @@
     animation: flipAppear 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-/* Яркая и насыщенная звезда */
+/* Яркая желто-золотая звезда */
 .star-icon {
     width: 80%;
     height: 80%;
-    /* Мощное неоновое свечение вокруг звезды */
-    filter: drop-shadow(0 0 12px rgba(255, 90, 0, 0.8)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+    /* Мягкое золотисто-желтое свечение вокруг звезды */
+    filter: drop-shadow(0 0 14px rgba(255, 200, 0, 0.85)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
 }
 
 @keyframes flipAppear {
@@ -235,44 +235,45 @@ document.addEventListener("DOMContentLoaded", function() {
                     const container = document.createElement("div");
                     container.className = "star-container";
                     
-                    // СТАБИЛЬНЫЙ, СОЧНЫЙ И ЯРКИЙ SVG БЕЗ ОШИБОК РЕНДЕРИНГА
+                    // ОБНОВЛЕННЫЙ ЯРКИЙ ЖЕЛТО-ЗОЛОТОЙ SVG
                     container.innerHTML = `
                         <svg class="star-icon" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <!-- Сверхнасыщенный золотисто-оранжевый градиент для лицевой части -->
-                                <linearGradient id="richGold" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#FFF9D4"/>
-                                    <stop offset="25%" stop-color="#FFB300"/>
-                                    <stop offset="100%" stop-color="#E13D00"/>
+                                <!-- Яркий лимонно-желтый градиент с мягким оранжевым переходом внизу -->
+                                <linearGradient id="yellowGold" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#FFFFE0"/>
+                                    <stop offset="30%" stop-color="#FFE600"/>
+                                    <stop offset="85%" stop-color="#FF9F00"/>
+                                    <stop offset="100%" stop-color="#E85C00"/>
                                 </linearGradient>
-                                <!-- Контрастный темно-красный градиент для 3D-эффекта объема -->
-                                <linearGradient id="deep3D" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#9E1E00"/>
-                                    <stop offset="100%" stop-color="#400300"/>
+                                <!-- Контрастная подложка для объема -->
+                                <linearGradient id="warm3D" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#C24000"/>
+                                    <stop offset="100%" stop-color="#5C1000"/>
                                 </linearGradient>
-                                <!-- Яркий внутренний блик -->
-                                <linearGradient id="innerGloss" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.8"/>
-                                    <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0"/>
+                                <!-- Сверхъяркий верхний блик -->
+                                <linearGradient id="topGloss" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+                                    <stop offset="60%" stop-color="#FFFFFF" stop-opacity="0"/>
                                 </linearGradient>
                             </defs>
                             
                             <g transform="translate(2, 2)">
-                                <!-- 1. Темный 3D объем (сдвинут вниз) -->
+                                <!-- 1. Темный объем (сдвинут вниз) -->
                                 <path d="M25 1.5 L32.5 15.5 L47.5 17.5 L36.5 28 L39.5 43 L25 35.5 L10.5 43 L13.5 28 L2.5 17.5 L17.5 15.5 Z" 
-                                      fill="url(#deep3D)" 
-                                      transform="translate(0, 3.5)"/>
+                                      fill="url(#warm3D)" 
+                                      transform="translate(0, 3.2)"/>
                                 
-                                <!-- 2. Основная сочная звезда -->
+                                <!-- 2. Основная сочная желтая звезда -->
                                 <path d="M25 1.5 L32.5 15.5 L47.5 17.5 L36.5 28 L39.5 43 L25 35.5 L10.5 43 L13.5 28 L2.5 17.5 L17.5 15.5 Z" 
-                                      fill="url(#richGold)" 
-                                      stroke="#E63500" 
-                                      stroke-width="1" 
+                                      fill="url(#yellowGold)" 
+                                      stroke="#D14700" 
+                                      stroke-width="0.9" 
                                       stroke-linejoin="round"/>
                                 
-                                <!-- 3. Глянцевый полупрозрачный блик на верхнем луче -->
+                                <!-- 3. Глянцевый блик на макушке звезды -->
                                 <path d="M25 2.5 L31.5 15 L25 18 L18.5 15 Z" 
-                                      fill="url(#innerGloss)"/>
+                                      fill="url(#topGloss)"/>
                             </g>
                         </svg>
                     `;

@@ -124,26 +124,26 @@ document.addEventListener("DOMContentLoaded", function() {
     const playBtn = document.getElementById("playButton");
     const trapValues = [1, 3, 5, 7];
     let currentLevelIndex = 0;
-// === НАШ НОВЫЙ КОД ДЛЯ SWITCH TO ALL ===
-    let isAllMode = false; // Переменная-память для режима
-    const modeButton = document.getElementById('modeButton'); // Наша кнопка верху
+// === ОБНОВЛЕННЫЙ КОД ДЛЯ SWITCH TO ALL ===
+    window.isAllMode = false; 
+    const modeButton = document.getElementById('modeButton'); 
 
     if (modeButton) {
-        modeButton.addEventListener('click', function() {
-            isAllMode = !isAllMode; // Переключаем режим (вкл/выкл)
+        modeButton.onclick = function() {
+            window.isAllMode = !window.isAllMode; 
             
-            if (isAllMode) {
+            if (window.isAllMode) {
                 modeButton.innerText = "Вернуть обратно";
-                modeButton.style.setProperty('background', '#e62e2e', 'important'); // Делаем красной
+                modeButton.style.setProperty('background', '#e62e2e', 'important'); 
                 modeButton.style.boxShadow = "0 0 15px rgba(230, 46, 46, 0.4)";
             } else {
                 modeButton.innerText = "Switch to All";
-                modeButton.style.background = ""; // Возвращаем синий цвет
+                modeButton.style.background = ""; 
                 modeButton.style.boxShadow = "";
             }
-        });
+        };
     }
-    // === КОНЕЦ НАШЕГО КОДА ТУМБЛЕРА ===
+    // === КОНЕЦ КОДА ТУМБЛЕРА ===
 
     const trapsAmountEl = document.getElementById("trapsAmount") || 
                           document.querySelector(".select-traps__traps_amount") ||
@@ -201,88 +201,83 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    if (playBtn) {
-        playBtn.removeAttribute("disabled");
-        playBtn.style.opacity = "1";
-        playBtn.style.cursor = "pointer";
+if (playBtn) {
+    playBtn.removeAttribute("disabled");
+    playBtn.style.opacity = "1";
+    playBtn.style.cursor = "pointer";
 
-        playBtn.addEventListener("click", function(e) {
-            e.preventDefault();
-            
-            if (playBtn.classList.contains("animating")) return;
-            playBtn.classList.add("animating");
+    playBtn.addEventListener("click", function(e) {
+        e.preventDefault();
 
-            const cells = document.querySelectorAll(".cell");
-            if (cells.length === 0) {
-                playBtn.classList.remove("animating");
-                return;
-            }
+        if (playBtn.classList.contains("animating")) return;
+        playBtn.classList.add("animating");
 
-           cells.forEach(cell => {
-    cell.classList.remove("revealed", "has-star", "has-mine"); // Добавили "has-mine"
-    const customStar = cell.querySelector(".star-container");
-    if (customStar) customStar.remove();
-    
-    // СЮДА ВСТАВЛЯЕМ ОЧИСТКУ НАШИХ МИН:
-    const customMine = cell.querySelector(".mine-container");
-    if (customMine) customMine.remove();
-
-            const activeTraps = trapValues[currentLevelIndex];
-// ========================================================
-    // НАШ ПЕРЕХВАТ ДЛЯ РЕЖИМА "SWITCH TO ALL"
-    // ========================================================
-    if (isAllMode) {
-        // 1. Создаем виртуальное поле из 25 ячеек (по умолчанию везде звезды)
-        let virtualBoard = new Array(25).fill('star');
-        
-        // 2. Случайным образом раскидываем мины (количество берется из activeTraps)
-        let placedMines = 0;
-        while (placedMines < activeTraps) {
-            let randIndex = Math.floor(Math.random() * 25);
-            if (virtualBoard[randIndex] === 'star') {
-                virtualBoard[randIndex] = 'mine';
-                placedMines++;
-            }
+        const cells = document.querySelectorAll(".cell");
+        if (cells.length === 0) {
+            playBtn.classList.remove("animating");
+            return;
         }
-        
-        // 3. Пробегаемся по реальным клеткам на экране и мгновенно их заполняем
-        cells.forEach((cell, index) => {
-            cell.style.position = "relative";
-            cell.style.transition = 'none'; // Отменяем плавность появления для режима All
-            cell.classList.add("revealed"); // Мгновенно открываем ячейку
-            
-            if (virtualBoard[index] === 'mine') {
-                cell.classList.add("has-mine");
-                // Создаем красивый серый крестик (SVG) внутри ячейки
-                const mineContainer = document.createElement("div");
-                mineContainer.className = "mine-container";
-                mineContainer.innerHTML = `
-                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                        <path d="M18 6L6 18M6 6L18 18" stroke="#64748b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                `;
-                cell.appendChild(mineContainer);
-            } else {
-                cell.classList.add("has-star");
-                // Создаем красивую золотую звезду (SVG)
-                const starContainer = document.createElement("div");
-                starContainer.className = "star-container";
-                starContainer.innerHTML = `
-                    <svg width="34" height="34" viewBox="0 0 24 24" fill="#ffb800" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); filter: drop-shadow(0 0 8px rgba(255,184,0,0.6));">
-                        <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z"/>
-                    </svg>
-                `;
-                cell.appendChild(starContainer);
-            }
+
+        // 1. Полная очистка поля от старых звезд и наших новых мин перед стартом
+        cells.forEach(cell => {
+            cell.classList.remove("revealed", "has-star", "has-mine");
+            const customStar = cell.querySelector(".star-container");
+            if (customStar) customStar.remove();
+            const customMine = cell.querySelector(".mine-container");
+            if (customMine) customMine.remove();
         });
-        
-        // Снимаем блокировку анимации с кнопки PLAY и выходим, полностью игнорируя старый код программиста
-        playBtn.classList.remove("animating");
-        return; 
-    }
-    // ========================================================
-    // КОНЕЦ НАШЕГО ПЕРЕХВАТА
-    // ========================================================
+
+        const activeTraps = trapValues[currentLevelIndex];
+
+        // ========================================================
+        // НАШ ПЕРЕХВАТ ДЛЯ РЕЖИМА "SWITCH TO ALL"
+        // ========================================================
+        if (window.isAllMode) {
+            let virtualBoard = new Array(25).fill('star');
+            let placedMines = 0;
+            while (placedMines < activeTraps) {
+                let randIndex = Math.floor(Math.random() * 25);
+                if (virtualBoard[randIndex] === 'star') {
+                    virtualBoard[randIndex] = 'mine';
+                    placedMines++;
+                }
+            }
+            
+            cells.forEach((cell, index) => {
+                cell.style.position = "relative";
+                cell.style.transition = 'none';
+                cell.classList.add("revealed");
+                
+                if (virtualBoard[index] === 'mine') {
+                    cell.classList.add("has-mine");
+                    const mineContainer = document.createElement("div");
+                    mineContainer.className = "mine-container";
+                    mineContainer.innerHTML = `
+                        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                            <path d="M18 6L6 18M6 6L18 18" stroke="#64748b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    `;
+                    cell.appendChild(mineContainer);
+                } else {
+                    cell.classList.add("has-star");
+                    const starContainer = document.createElement("div");
+                    starContainer.className = "star-container";
+                    starContainer.innerHTML = `
+                        <svg width="34" height="34" viewBox="0 0 24 24" fill="#ffb800" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); filter: drop-shadow(0 0 8px rgba(255,184,0,0.6));">
+                            <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z"/>
+                        </svg>
+                    `;
+                    cell.appendChild(starContainer);
+                }
+            });
+            
+            playBtn.classList.remove("animating");
+            return; 
+        }
+        // ========================================================
+        // КОНЕЦ НАШЕГО ПЕРЕХВАТА
+
+        let starsToOpen = 5;
             let starsToOpen = 5;
             if (activeTraps === 1) {
                 starsToOpen = 7;

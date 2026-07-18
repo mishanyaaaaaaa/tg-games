@@ -124,6 +124,25 @@ document.addEventListener("DOMContentLoaded", function() {
     const playBtn = document.getElementById("playButton");
     const trapValues = [1, 3, 5, 7];
     let currentLevelIndex = 0;
+// === НАСТРОЙКА РЕЖИМА "SWITCH TO ALL" ===
+    let currentMode = 'single'; 
+    const modeBtn = document.getElementById('modeButton') || document.querySelector('[class*="mode"]'); 
+
+    if (modeBtn) {
+        modeBtn.addEventListener('click', function() {
+            if (currentMode === 'single') {
+                currentMode = 'all';
+                modeBtn.textContent = 'Switch to Single';
+                modeBtn.classList.add('active'); 
+            } else {
+                currentMode = 'single';
+                modeBtn.textContent = 'Switch to All';
+                modeBtn.classList.remove('active');
+            }
+            console.log("Режим изменен на:", currentMode);
+        });
+    }
+    // =========================================
 
     const trapsAmountEl = document.getElementById("trapsAmount") || 
                           document.querySelector(".select-traps__traps_amount") ||
@@ -215,6 +234,10 @@ document.addEventListener("DOMContentLoaded", function() {
             } else if (activeTraps === 7) {
                 starsToOpen = 3;
             }
+// Перезаписываем количество звёзд, если включен режим "ALL"
+if (currentMode === 'all') {
+    starsToOpen = 25 - activeTraps; 
+}
 
             if (starsToOpen > cells.length) starsToOpen = cells.length;
 

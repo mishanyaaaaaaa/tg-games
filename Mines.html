@@ -125,6 +125,86 @@ document.addEventListener("DOMContentLoaded", function() {
     const trapValues = [1, 3, 5, 7];
     let currentLevelIndex = 0;
 
+    const trapsAmountEl = document.getElementById("trapsAmount") || 
+                          document.querySelector(".select-traps__traps_amount") ||
+                          document.querySelector("[data-traps]") ||
+                          document.querySelector(".traps-count") ||
+                          document.querySelector(".select-traps__container span") ||
+                          document.querySelector(".select-traps span");
+
+    const btnMinus = document.querySelector(".select-traps__btn_minus") || 
+                     document.querySelector("[class*='minus']") || 
+                     document.querySelector("[class*='prev']") ||
+                     (trapsAmountEl ? trapsAmountEl.previousElementSibling : null);
+
+    const btnPlus = document.querySelector(".select-traps__btn_plus") || 
+                    document.querySelector("[class*='plus']") || 
+                    document.querySelector("[class*='next']") ||
+                    (trapsAmountEl ? trapsAmountEl.nextElementSibling : null);
+
+    function updateTrapsDisplay() {
+        if (trapsAmountEl) {
+            const currentVal = trapValues[currentLevelIndex];
+            if (trapsAmountEl.childNodes.length > 1) {
+                for (let node of trapsAmountEl.childNodes) {
+                    if (node.nodeType === Node.TEXT_NODE && /\d/.test(node.nodeValue)) {
+                        node.nodeValue = currentVal;
+                        break;
+                    } else if (node.tagName === "SPAN" || node.className && node.className.includes("amount")) {
+                        node.textContent = currentVal;
+                        break;
+                    }
+                }
+            } else {
+                trapsAmountEl.textContent = currentVal;
+            }
+        }
+    }
+
+    if (btnMinus) {
+        btnMinus.addEventListener("click", function(e) {
+            e.preventDefault();
+            if (currentLevelIndex > 0) {
+                currentLevelIndex--;
+                updateTrapsDisplay();
+            }
+        });
+    }
+
+    if (btnPlus) {
+        btnPlus.addEventListener("click", function(e) {
+            e.preventDefault();
+            if (currentLevelIndex < trapValues.length - 1) {
+                currentLevelIndex++;
+                updateTrapsDisplay();
+            }
+        });
+    }
+
+    if (playBtn) {
+        playBtn.removeAttribute("disabled");
+        playBtn.style.opacity = "1";
+        playBtn.style.cursor = "pointer";
+
+        playBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            
+            if (playBtn.classList.contains("animating")) return;
+            playBtn.classList.add("animating");
+
+            const cells = document.querySelectorAll(".cell");
+            if (cells.length === 0) {
+                playBtn.classList.remove("animating");
+                return;
+            }
+
+            cells.forEach(cell => {
+                cell.classList.remove("revealed", "has-star");
+                const customStar = cell.querySelector(".star-container");
+                if (customStar) customStar.remove();
+            });
+
+            const activeTraps = trapValues[currentLevelIndex];
             let starsToOpen = 5;
             if (activeTraps === 1) {
                 starsToOpen = 7;

@@ -332,7 +332,7 @@ if (currentMode === 'all') {
             renderCell(); // В режиме ALL запускаем мгновенно в ту же миллисекунду без таймеров!
         } else {
             setTimeout(renderCell, delay); // В режиме Single оставляем твой поочередный таймер
-            delay += 200; 
+            delay += 500; 
         }
     });
 });

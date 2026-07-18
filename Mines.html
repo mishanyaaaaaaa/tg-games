@@ -117,6 +117,18 @@
     cursor: pointer !important;
     user-select: none;
 }
+/* Стиль для ячейки с крестиком */
+.cross-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0%, rgba(40, 10, 10, 0.5) 100%) !important;
+}
+
+/* Анимация появления крестика */
+.cross-container svg {
+    animation: flipAppear 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
 </style>
 
 <script>
@@ -249,72 +261,82 @@ if (currentMode === 'all') {
                 }
             }
 
-            let delay = 0;
-            starIndices.forEach((index, i) => {
-                setTimeout(() => {
-                    const cell = cells[index];
-                    cell.style.position = "relative";
-                    
-                    const container = document.createElement("div");
-                    container.className = "star-container";
-                    
-                    // ОБНОВЛЕННЫЙ ЯРКИЙ ЖЕЛТО-ЗОЛОТОЙ SVG
-                    container.innerHTML = `
-                        <svg class="star-icon" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <!-- Яркий лимонно-желтый градиент с мягким оранжевым переходом внизу -->
-                                <linearGradient id="yellowGold" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#FFFFE0"/>
-                                    <stop offset="30%" stop-color="#FFE600"/>
-                                    <stop offset="85%" stop-color="#FF9F00"/>
-                                    <stop offset="100%" stop-color="#E85C00"/>
-                                </linearGradient>
-                                <!-- Контрастная подложка для объема -->
-                                <linearGradient id="warm3D" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#C24000"/>
-                                    <stop offset="100%" stop-color="#5C1000"/>
-                                </linearGradient>
-                                <!-- Сверхъяркий верхний блик -->
-                                <linearGradient id="topGloss" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
-                                    <stop offset="60%" stop-color="#FFFFFF" stop-opacity="0"/>
-                                </linearGradient>
-                            </defs>
-                            
-                            <g transform="translate(2, 2)">
-                                <!-- 1. Темный объем (сдвинут вниз) -->
-                                <path d="M25 1.5 L32.5 15.5 L47.5 17.5 L36.5 28 L39.5 43 L25 35.5 L10.5 43 L13.5 28 L2.5 17.5 L17.5 15.5 Z" 
-                                      fill="url(#warm3D)" 
-                                      transform="translate(0, 3.2)"/>
-                                
-                                <!-- 2. Основная сочная желтая звезда -->
-                                <path d="M25 1.5 L32.5 15.5 L47.5 17.5 L36.5 28 L39.5 43 L25 35.5 L10.5 43 L13.5 28 L2.5 17.5 L17.5 15.5 Z" 
-                                      fill="url(#yellowGold)" 
-                                      stroke="#D14700" 
-                                      stroke-width="0.9" 
-                                      stroke-linejoin="round"/>
-                                
-                                <!-- 3. Глянцевый блик на макушке звезды -->
-                                <path d="M25 2.5 L31.5 15 L25 18 L18.5 15 Z" 
-                                      fill="url(#topGloss)"/>
-                            </g>
-                        </svg>
-                    `;
-                    
-                    cell.appendChild(container);
-                    cell.classList.add("revealed", "has-star");
+           // === НАЧАЛО ОБНОВЛЕННОГО БЛОКА ОТКРЫТИЯ ЯЧЕЕК ===
+    let delay = 0;
 
-                    if (i === starIndices.length - 1) {
-                        setTimeout(() => {
-                            playBtn.classList.remove("animating");
-                        }, 500);
-                    }
-                }, delay);
-                
-                delay += 350;
-            });
-        });
-    }
+    // Определяем, какие индексы ячеек перебирать
+    // Если "all" — перебираем абсолютно все 25 ячеек поля, если "single" — только выбранные звезды
+    const targetIndices = currentMode === 'all' 
+        ? Array.from({ length: cells.length }, (_, i) => i) 
+        : starIndices;
+
+    targetIndices.forEach((index, i) => {
+        // Создаем отдельную функцию отрисовки для каждой ячейки
+        const renderCell = () => {
+            const cell = cells[index];
+            cell.style.position = "relative";
+            
+            const container = document.createElement("div");
+            
+            // Проверяем: это звезда или мина?
+            if (starIndices.includes(index)) {
+                // ТВОЙ ОБНОВЛЕННЫЙ ЯРКО ЖЕЛТО-ЗОЛОТОЙ SVG ИЗ СКРИНШОТА
+                container.className = "star-container";
+                container.innerHTML = `
+                    <svg class="star-icon" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="yellowGold" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#FFFFE0"/>
+                                <stop offset="30%" stop-color="#FFE600"/>
+                                <stop offset="85%" stop-color="#FF9F00"/>
+                                <stop offset="100%" stop-color="#E85C00"/>
+                            </linearGradient>
+                            <linearGradient id="warm3D" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#C24000"/>
+                                <stop offset="100%" stop-color="#5C1000"/>
+                            </linearGradient>
+                            <linearGradient id="topGloss" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+                                <stop offset="60%" stop-color="#FFFFFF" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <g transform="translate(2, 2)">
+                            <path d="M25 1.5 L32.5 15.5 L47.5 17.5 L36.5 28 L39.5 43 L25 35.5 L10.5 43 L13.5 28 L2.5 17.5 L17.5 15.5 Z" fill="url(#warm3D)" transform="translate(0, 3.2)"/>
+                            <path d="M25 1.5 L32.5 15.5 L47.5 17.5 L36.5 28 L39.5 43 L25 35.5 L10.5 43 L13.5 28 L2.5 17.5 L17.5 15.5 Z" fill="url(#yellowGold)" stroke="#D14700" stroke-width="0.9" stroke-linejoin="round"/>
+                            <path d="M25 2.5 L31.5 15 L25 18 L18.5 15 Z" fill="url(#topGloss)"/>
+                        </g>
+                    </svg>
+                `;
+                cell.appendChild(container);
+                cell.classList.add("revealed", "has-star");
+            } else {
+                // ОРИГИНАЛЬНЫЙ НЕОНОВЫЙ КРЕСТИК ИЗ 1WIN ДЛЯ МИН
+                container.className = "star-container cross-container";
+                container.innerHTML = `
+                    <svg viewBox="0 0 56 56" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 14L42 42M42 14L14 42" stroke="#ff3838" stroke-width="5.5" stroke-linecap="round" filter="drop-shadow(0 0 8px rgba(255, 56, 56, 0.8))"/>
+                    </svg>
+                `;
+                cell.appendChild(container);
+                cell.classList.add("revealed", "has-cross");
+            }
+
+            // Когда дошли до самого конца списка, разблокируем кнопку старта
+            if (i === targetIndices.length - 1) {
+                playBtn.classList.remove("animating");
+            }
+        };
+
+        // --- ВОТ ЗДЕСЬ РАЗДЕЛЯЕМ РЕЖИМЫ НА СКОРОСТЬ ---
+        if (currentMode === 'all') {
+            renderCell(); // В режиме ALL запускаем мгновенно в ту же миллисекунду без таймеров!
+        } else {
+            setTimeout(renderCell, delay); // В режиме Single оставляем твой поочередный таймер
+            delay += 200; 
+        }
+    });
+});
+}
 });
 </script>
 </body>

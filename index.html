@@ -331,7 +331,7 @@ function showMain() {
     const profileSection = document.getElementById("profile-section");
     
     if (profileSection) profileSection.style.display = "none";
-    if (mainSection) mainSection.style.display = ""; // Возвращаем исходный дизайн из CSS (сетку/flex)
+    if (mainSection) mainSection.style.display = "flex"; // Возвращаем flex-сетку для игр
 }
 
 function showProfile() {
@@ -339,7 +339,7 @@ function showProfile() {
     const profileSection = document.getElementById("profile-section");
     
     if (mainSection) mainSection.style.display = "none";
-    if (profileSection) profileSection.style.display = "block"; // Профиль может оставаться блоком
+    if (profileSection) profileSection.style.display = "block";
     updateProfileStats();
 }
 </script>

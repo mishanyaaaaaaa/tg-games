@@ -329,15 +329,17 @@ function updateProfileStats() {
 function showMain() {
     const mainSection = document.getElementById("main-section");
     const profileSection = document.getElementById("profile-section");
+    
     if (profileSection) profileSection.style.display = "none";
-    if (mainSection) mainSection.style.display = "block";
+    if (mainSection) mainSection.style.display = ""; // Возвращаем исходный дизайн из CSS (сетку/flex)
 }
 
 function showProfile() {
     const mainSection = document.getElementById("main-section");
     const profileSection = document.getElementById("profile-section");
+    
     if (mainSection) mainSection.style.display = "none";
-    if (profileSection) profileSection.style.display = "block";
+    if (profileSection) profileSection.style.display = "block"; // Профиль может оставаться блоком
     updateProfileStats();
 }
 </script>

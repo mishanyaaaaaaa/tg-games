@@ -329,18 +329,34 @@ function updateProfileStats() {
 function showMain() {
     const mainSection = document.getElementById("main-section");
     const profileSection = document.getElementById("profile-section");
-    
+    const btnHome = document.getElementById("btn-home");
+    const btnProfile = document.getElementById("btn-profile");
+
     if (profileSection) profileSection.style.display = "none";
-    if (mainSection) mainSection.style.display = "grid"; // Возвращаем Grid-сетку для карточек
+    
+    // Сбрасываем стиль, чтобы сетка игр вернулась в нормальное состояние (в два ряда)
+    if (mainSection) mainSection.style.display = ""; 
+
+    // Зажигаем кнопку "Главная" и тушим "Профиль"
+    if (btnHome) btnHome.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
+    if (btnProfile) btnProfile.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
 }
 
 function showProfile() {
     const mainSection = document.getElementById("main-section");
     const profileSection = document.getElementById("profile-section");
-    
+    const btnHome = document.getElementById("btn-home");
+    const btnProfile = document.getElementById("btn-profile");
+
     if (mainSection) mainSection.style.display = "none";
     if (profileSection) profileSection.style.display = "block";
-    updateProfileStats();
+    
+    // Обновляем статистику, если функция существует
+    if (typeof updateProfileStats === "function") updateProfileStats();
+
+    // Зажигаем кнопку "Профиль" и тушим "Главная"
+    if (btnProfile) btnProfile.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
+    if (btnHome) btnHome.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
 }
 </script>
  <div id="main-section" class=container>

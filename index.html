@@ -246,19 +246,17 @@ document.addEventListener('DOMContentLoaded', () => {
 const mainSection = document.getElementById("main-section");
 const profileSection = document.getElementById("profile-section");
 
-document.querySelectorAll("a, div").forEach(el => {
-    if (el.textContent.includes("Профиль")) {
-        el.style.cursor = "pointer";
-        el.addEventListener("click", (e) => {
+document.querySelectorAll("button").forEach(btn => {
+    if (btn.textContent.includes("Профиль")) {
+        btn.addEventListener("click", (e) => {
             e.preventDefault();
             if (mainSection) mainSection.style.display = "none";
             if (profileSection) profileSection.style.display = "block";
             updateProfileStats();
         });
     }
-    if (el.textContent.includes("Главная")) {
-        el.style.cursor = "pointer";
-        el.addEventListener("click", (e) => {
+    if (btn.textContent.includes("Главная")) {
+        btn.addEventListener("click", (e) => {
             e.preventDefault();
             if (profileSection) profileSection.style.display = "none";
             if (mainSection) mainSection.style.display = "block";

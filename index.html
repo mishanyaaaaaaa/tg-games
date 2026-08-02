@@ -247,7 +247,7 @@ const mainSection = document.getElementById("main-section");
 const profileSection = document.getElementById("profile-section");
 
 document.querySelectorAll("a, div").forEach(el => {
-    if (el.textContent.trim() === "Профиль") {
+    if (el.textContent.includes("Профиль")) {
         el.style.cursor = "pointer";
         el.addEventListener("click", (e) => {
             e.preventDefault();
@@ -256,7 +256,7 @@ document.querySelectorAll("a, div").forEach(el => {
             updateProfileStats();
         });
     }
-    if (el.textContent.trim() === "Главная") {
+    if (el.textContent.includes("Главная")) {
         el.style.cursor = "pointer";
         el.addEventListener("click", (e) => {
             e.preventDefault();

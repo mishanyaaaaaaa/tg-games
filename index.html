@@ -250,6 +250,9 @@ document.querySelectorAll("button").forEach(btn => {
     if (btn.textContent.includes("Профиль")) {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
+            const mainSection = document.getElementById("main-section");
+            const profileSection = document.getElementById("profile-section");
+            
             if (mainSection) mainSection.style.display = "none";
             if (profileSection) profileSection.style.display = "block";
             updateProfileStats();
@@ -258,6 +261,9 @@ document.querySelectorAll("button").forEach(btn => {
     if (btn.textContent.includes("Главная")) {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
+            const mainSection = document.getElementById("main-section");
+            const profileSection = document.getElementById("profile-section");
+            
             if (profileSection) profileSection.style.display = "none";
             if (mainSection) mainSection.style.display = "block";
         });

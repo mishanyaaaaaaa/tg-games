@@ -92,8 +92,8 @@
 <div style="margin-top: 15px; margin-bottom: 15px; display: flex; justify-content: center; width: 100%; z-index: 10;">
   <div style="display: flex; gap: 6px; background: rgba(25, 25, 25, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 215, 0, 0.2); padding: 5px 8px; border-radius: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow-x: auto; white-space: nowrap; max-width: 95%; -webkit-overflow-scrolling: touch;">
     
-    <button onclick="console.log('Главная')" style="background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">🏠 Главная</button>
-    <button onclick="console.log('Профиль')" style="background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">👤 Профиль</button>
+    <button onclick="showMain()" style="background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">🏠 Главная</button>
+    <button onclick="showProfile()" style="background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">👤 Профиль</button>
     <button onclick="console.log('Рулетка')" style="background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">🎯 Рулетка</button>
     <button onclick="console.log('Задания')" style="background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">📋 Задания</button>
     
@@ -246,26 +246,29 @@ document.addEventListener('DOMContentLoaded', () => {
 const mainSection = document.getElementById("main-section");
 const profileSection = document.getElementById("profile-section");
 
-document.querySelectorAll("button").forEach(btn => {
-    if (btn.textContent.includes("Профиль")) {
+document.querySelectorAll(".top-bar + div button, div[style*='backdrop-filter'] button").forEach((btn, index) => {
+    btn.style.cursor = "pointer";
+    
+    // Кнопка №0 — «Главная»
+    if (index === 0) {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
             const mainSection = document.getElementById("main-section");
             const profileSection = document.getElementById("profile-section");
-            
+            if (profileSection) profileSection.style.display = "none";
+            if (mainSection) mainSection.style.display = "block";
+        });
+    }
+    
+    // Кнопка №1 — «Профиль»
+    if (index === 1) {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const mainSection = document.getElementById("main-section");
+            const profileSection = document.getElementById("profile-section");
             if (mainSection) mainSection.style.display = "none";
             if (profileSection) profileSection.style.display = "block";
             updateProfileStats();
-        });
-    }
-    if (btn.textContent.includes("Главная")) {
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const mainSection = document.getElementById("main-section");
-            const profileSection = document.getElementById("profile-section");
-            
-            if (profileSection) profileSection.style.display = "none";
-            if (mainSection) mainSection.style.display = "block";
         });
     }
 });
@@ -322,6 +325,20 @@ function updateProfileStats() {
     document.getElementById("profile-xp").textContent = xp % 100;
     document.getElementById("profile-level").textContent = Math.floor(xp / 100) + 1;
     document.getElementById("profile-xp-bar").style.width = (xp % 100) + "%";
+}
+function showMain() {
+    const mainSection = document.getElementById("main-section");
+    const profileSection = document.getElementById("profile-section");
+    if (profileSection) profileSection.style.display = "none";
+    if (mainSection) mainSection.style.display = "block";
+}
+
+function showProfile() {
+    const mainSection = document.getElementById("main-section");
+    const profileSection = document.getElementById("profile-section");
+    if (mainSection) mainSection.style.display = "none";
+    if (profileSection) profileSection.style.display = "block";
+    updateProfileStats();
 }
 </script>
  <div id="main-section" class=container>

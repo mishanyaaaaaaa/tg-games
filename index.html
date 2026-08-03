@@ -304,6 +304,41 @@ function showMain() {
     if (btnProfile) btnProfile.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
 }
 
+// --- ФУНКЦИЯ ЗАГРУЗКИ ДАННЫХ ИЗ TELEGRAM ---
+function loadProfileTelegramData() {
+    if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            const user = tg.initDataUnsafe.user;
+
+            // 1. Подставляем Имя
+            const nameElem = document.getElementById("profile-page-name");
+            if (nameElem) {
+                const fullName = (user.first_name || '') + ' ' + (user.last_name || '');
+                nameElem.innerText = fullName.trim() || user.username || "Пользователь";
+            }
+
+            // 2. Подставляем Telegram ID
+            const idElem = document.getElementById("profile-page-id");
+            if (idElem) {
+                idElem.innerText = "ID: " + user.id;
+            }
+
+            // 3. Подставляем Аватарку
+            const avatarElem = document.getElementById("profile-page-avatar");
+            if (avatarElem) {
+                if (user.photo_url) {
+                    avatarElem.src = user.photo_url;
+                } else {
+                    avatarElem.src = "https://api.dicebear.com/7.x/bottts/svg?seed=" + user.id;
+                }
+            }
+        }
+    }
+}
+
 // --- 3. ПЕРЕКЛЮЧЕНИЕ НА ПРОФИЛЬ ---
 function showProfile() {
     const mainSection = document.getElementById("main-section");
@@ -312,15 +347,17 @@ function showProfile() {
     const btnHome = document.getElementById("btn-home");
     const btnProfile = document.getElementById("btn-profile");
 
-    // Скрываем верхнюю панель и главную, чтобы меню поднялось на самый верх!
+    // Скрываем верхнюю панель и главную, отображаем профиль
     if (topBar) topBar.classList.add("hidden");
     if (mainSection) mainSection.classList.add("hidden");
     if (profileSection) profileSection.classList.remove("hidden");
 
+    // Подтягиваем аватарку, имя и ID из Telegram
+    loadProfileTelegramData();
     if (typeof updateProfileStats === "function") updateProfileStats();
 
     // Подсветка кнопок
-    if (btnProfile) btnProfile.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
+    if (btnProfile) btnProfile.style.cssText = "background: rgba(255, 215, 0, 0.15); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
     if (btnHome) btnHome.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
 }
 </script>
@@ -392,25 +429,36 @@ function showProfile() {
  <a href=./TowerRush.html class=play-button data-i18n="open_btn">Открыть</a>
  </div>
 <!-- Секция Профиля -->
-<div id="profile-section" class="hidden" style="padding: 15px; color: #fff; font-family: sans-serif;">    
-    <!-- Шапка профиля: Аватар, Имя, ID -->
-    <div style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255, 215, 0, 0.2);">
-        <img id="profile-avatar" src="" alt="Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 2px solid #ffd700;">
-        <div>
-            <div id="profile-name" style="font-size: 18px; font-weight: bold; color: #fff;">Загрузка...</div>
-            <div id="profile-id" style="font-size: 12px; color: #888; margin-top: 2px;">ID: ...</div>
+<div id="profile-section" class="hidden" style="padding: 10px 15px; color: #fff; font-family: sans-serif; max-width: 500px; margin: 0 auto;">
+
+    <!-- 1. КАРТОЧКА ПОЛЬЗОВАТЕЛЯ (Аватарка + Ник + ID) -->
+    <div style="display: flex; align-items: center; background: rgba(30, 30, 30, 0.85); backdrop-filter: blur(10px); border-radius: 20px; padding: 18px; margin-bottom: 15px; border: 1px solid rgba(255, 215, 0, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        
+        <!-- Крупная аватарка -->
+        <img id="profile-page-avatar" src="" alt="Avatar" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-right: 18px; border: 2.5px solid #FFD700; background: #1a1a1a; flex-shrink: 0;">
+        
+        <!-- Никнейм и ID -->
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+            <div id="profile-page-name" style="font-size: 20px; font-weight: 800; color: #FFD700; letter-spacing: 0.5px; word-break: break-word;">Загрузка...</div>
+            <div id="profile-page-id" style="font-size: 13px; color: #bbbbbb; margin-top: 4px; font-weight: 500;">ID: ...</div>
         </div>
+
     </div>
 
-    <!-- Ранг и шкала XP -->
-    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255, 215, 0, 0.2);">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
-            <span>Уровень <strong id="profile-level" style="color: #ffd700;">1</strong></span>
-            <span style="color: #888;"><span id="profile-xp">0</span> / 100 XP</span>
+    <!-- 2. БЛОК РАНГА И ШКАЛА ПРОГРЕССА XP -->
+    <div style="background: rgba(30, 30, 30, 0.85); backdrop-filter: blur(10px); border-radius: 20px; padding: 18px; margin-bottom: 15px; border: 1px solid rgba(255, 215, 0, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        
+        <!-- Заголовок и текущие цифры XP -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span style="font-size: 14px; color: #ffffff; font-weight: bold;">Уровень: <strong id="profile-level" style="color: #FFD700;">1</strong></span>
+            <span style="font-size: 13px; color: #888888;"><span id="profile-xp" style="color: #FFD700; font-weight: bold;">0</span> / 100 XP</span>
         </div>
-        <div style="width: 100%; background: rgba(255, 255, 255, 0.1); height: 10px; border-radius: 5px; overflow: hidden;">
-            <div id="profile-xp-bar" style="width: 20%; height: 100%; background: linear-gradient(90deg, #f39c12, #f1c40f); border-radius: 5px;"></div>
+
+        <!-- Полоса прогресса -->
+        <div style="width: 100%; height: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 215, 0, 0.2);">
+            <div id="profile-xp-bar" style="width: 25%; height: 100%; background: linear-gradient(90deg, #f39c12, #f1c40f); border-radius: 6px; transition: width 0.4s ease;"></div>
         </div>
+
     </div>
 
     <!-- Статистика -->

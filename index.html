@@ -91,16 +91,19 @@
   </div>
 </div>
 
-<!-- ПАНЕЛЬ МЕНЮ (Вернули горизонтальный скролл) -->
-<div style="margin-top: 15px; margin-bottom: 15px; display: flex; justify-content: center; width: 100%; z-index: 10;">
-  <div style="display: flex; gap: 6px; background: rgba(25, 25, 25, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 215, 0, 0.2); padding: 5px 8px; border-radius: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow-x: auto; white-space: nowrap; max-width: 95%; -webkit-overflow-scrolling: touch;">
-    
-    <button id="btn-home" onclick="showMain()" style="background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">🏠 Главная</button>
-    <button id="btn-profile" onclick="showProfile()" style="background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">👤 Профиль</button>
-    <button onclick="console.log('Рулетка')" style="background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">🎯 Рулетка</button>
-    <button onclick="console.log('Задания')" style="background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">📋 Задания</button>
-    
-  </div>
+<!-- ПАНЕЛЬ МЕНЮ (Только Главная и Профиль) -->
+<div style="display: flex; justify-content: center; width: 100%; z-index: 10; margin-top: 15px; margin-bottom: 15px;">
+    <div style="display: flex; gap: 8px; background: rgba(25, 25, 25, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 215, 0, 0.2); padding: 5px 12px; border-radius: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+        
+        <button id="btn-home" onclick="showMain()" style="background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 14px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">
+            🏠 Главная
+        </button>
+        
+        <button id="btn-profile" onclick="showProfile()" style="background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 14px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;">
+            👤 Профиль
+        </button>
+
+    </div>
 </div>
 <script>
   console.log("Скрипт профиля загружен!");

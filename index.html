@@ -20,6 +20,9 @@
 .star {
     display: none !important;
 }
+.hidden {
+    display: none !important;
+}
 @keyframes snake {
     0% { clip-path: inset(0 95% 95% 0); }
     25% { clip-path: inset(0 0 95% 0); }
@@ -246,33 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
 const mainSection = document.getElementById("main-section");
 const profileSection = document.getElementById("profile-section");
 
-document.querySelectorAll(".top-bar + div button, div[style*='backdrop-filter'] button").forEach((btn, index) => {
-    btn.style.cursor = "pointer";
-    
-    // Кнопка №0 — «Главная»
-    if (index === 0) {
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const mainSection = document.getElementById("main-section");
-            const profileSection = document.getElementById("profile-section");
-            if (profileSection) profileSection.style.display = "none";
-            if (mainSection) mainSection.style.display = "block";
-        });
-    }
-    
-    // Кнопка №1 — «Профиль»
-    if (index === 1) {
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const mainSection = document.getElementById("main-section");
-            const profileSection = document.getElementById("profile-section");
-            if (mainSection) mainSection.style.display = "none";
-            if (profileSection) profileSection.style.display = "block";
-            updateProfileStats();
-        });
-    }
-});
-
 document.querySelectorAll(".play-button").forEach(button => {
     button.addEventListener("click", () => {
         const card = button.closest(".game-card");
@@ -303,34 +279,6 @@ document.querySelectorAll(".play-button").forEach(button => {
     });
 });
 
-// --- 1. ФУНКЦИЯ ОБНОВЛЕНИЯ СТАТИСТИКИ ПРОФИЛЯ ---
-// Обернули код в функцию с проверками, чтобы он не ломал скрипт при старте
-function updateProfileStats() {
-    if (typeof stats !== "undefined") {
-        let maxClicks = 0;
-        let favGame = "Mines";
-        for (let game in stats) {
-            if (stats[game] > maxClicks) {
-                maxClicks = stats[game];
-                favGame = game;
-            }
-        }
-        const favEl = document.getElementById("stat-fav-game");
-        if (favEl) favEl.textContent = favGame;
-    }
-
-    if (typeof total !== "undefined") {
-        let xp = total * 10;
-        const xpEl = document.getElementById("profile-xp");
-        const levelEl = document.getElementById("profile-level");
-        const barEl = document.getElementById("profile-xp-bar");
-
-        if (xpEl) xpEl.textContent = xp % 100;
-        if (levelEl) levelEl.textContent = Math.floor(xp / 100) + 1;
-        if (barEl) barEl.style.width = (xp % 100) + "%";
-    }
-}
-
 // --- 2. ПЕРЕКЛЮЧЕНИЕ НА ГЛАВНУЮ ---
 function showMain() {
     const mainSection = document.getElementById("main-section");
@@ -338,13 +286,13 @@ function showMain() {
     const btnHome = document.getElementById("btn-home");
     const btnProfile = document.getElementById("btn-profile");
 
-    if (profileSection) profileSection.style.display = "none";
+    // Скрываем профиль
+    if (profileSection) profileSection.classList.add("hidden");
     
-    // Возвращаем главной странице сетку ИМЕННО в 2 колонки
+    // Показываем главную и полностью снимаем любые лишние инлайн-стили
     if (mainSection) {
-        mainSection.style.display = "grid";
-        mainSection.style.gridTemplateColumns = "repeat(2, 1fr)";
-        mainSection.style.gap = "20px";
+        mainSection.classList.remove("hidden");
+        mainSection.removeAttribute("style");
     }
 
     // Подсветка кнопок
@@ -359,30 +307,13 @@ function showProfile() {
     const btnHome = document.getElementById("btn-home");
     const btnProfile = document.getElementById("btn-profile");
 
-    if (mainSection) mainSection.style.display = "none";
-    if (profileSection) profileSection.style.display = "block";
+    // Скрываем главную и показываем профиль
+    if (mainSection) mainSection.classList.add("hidden");
+    if (profileSection) profileSection.classList.remove("hidden");
 
-    // Безопасно обновляем статистику
-    updateProfileStats();
-
-    // Подсветка кнопок
-    if (btnProfile) btnProfile.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
-    if (btnHome) btnHome.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
-}
-
-function showProfile() {
-    const mainSection = document.getElementById("main-section");
-    const profileSection = document.getElementById("profile-section");
-    const btnHome = document.getElementById("btn-home");
-    const btnProfile = document.getElementById("btn-profile");
-
-    if (mainSection) mainSection.style.display = "none";
-    if (profileSection) profileSection.style.display = "block";
-    
-    // Обновляем статистику, если функция существует
     if (typeof updateProfileStats === "function") updateProfileStats();
 
-    // Зажигаем кнопку "Профиль" и тушим "Главная"
+    // Подсветка кнопок
     if (btnProfile) btnProfile.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
     if (btnHome) btnHome.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
 }
@@ -455,8 +386,7 @@ function showProfile() {
  <a href=./TowerRush.html class=play-button data-i18n="open_btn">Открыть</a>
  </div>
 <!-- Секция Профиля -->
-<div id="profile-section" style="display: none; padding: 15px; color: #fff; font-family: sans-serif;">
-    
+<div id="profile-section" class="hidden" style="padding: 15px; color: #fff; font-family: sans-serif;">    
     <!-- Шапка профиля: Аватар, Имя, ID -->
     <div style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255, 215, 0, 0.2);">
         <img id="profile-avatar" src="" alt="Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 2px solid #ffd700;">

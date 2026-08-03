@@ -141,16 +141,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-} else {
-    console.log("Данные пользователя не получены. Может, открыто не в Telegram?");
-    
-    if (document.getElementById('tg-nickname')) {
-        document.getElementById('tg-nickname').innerText = 'Нет данных';
-    }
-    if (document.getElementById('tg-id')) {
-        document.getElementById('tg-id').innerText = 'ID: Недоступен';
-    }
-}
 // === ЛОГИКА КНОПКИ ЯЗЫКА И ПЕРЕВОДА ===
 
 // 1. Открытие / Закрытие меню

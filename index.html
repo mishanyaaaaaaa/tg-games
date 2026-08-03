@@ -303,29 +303,35 @@ document.querySelectorAll(".play-button").forEach(button => {
     });
 });
 
+// --- 1. ФУНКЦИЯ ОБНОВЛЕНИЯ СТАТИСТИКИ ПРОФИЛЯ ---
+// Обернули код в функцию с проверками, чтобы он не ломал скрипт при старте
 function updateProfileStats() {
-    let total = localStorage.getItem("total_launches") || "0";
-    let todayCount = localStorage.getItem("signals_today") || "0";
-    
-    document.getElementById("stat-total-launches").textContent = total;
-    document.getElementById("stat-today-signals").textContent = todayCount;
-
-    let stats = JSON.parse(localStorage.getItem("user_game_stats") || "{}");
-    let favGame = "Ещё нет данных";
-    let maxClicks = 0;
-    for (let game in stats) {
-        if (stats[game] > maxClicks) {
-            maxClicks = stats[game];
-            favGame = game;
+    if (typeof stats !== "undefined") {
+        let maxClicks = 0;
+        let favGame = "Mines";
+        for (let game in stats) {
+            if (stats[game] > maxClicks) {
+                maxClicks = stats[game];
+                favGame = game;
+            }
         }
+        const favEl = document.getElementById("stat-fav-game");
+        if (favEl) favEl.textContent = favGame;
     }
-    document.getElementById("stat-fav-game").textContent = favGame;
-    
-    let xp = total * 10;
-    document.getElementById("profile-xp").textContent = xp % 100;
-    document.getElementById("profile-level").textContent = Math.floor(xp / 100) + 1;
-    document.getElementById("profile-xp-bar").style.width = (xp % 100) + "%";
+
+    if (typeof total !== "undefined") {
+        let xp = total * 10;
+        const xpEl = document.getElementById("profile-xp");
+        const levelEl = document.getElementById("profile-level");
+        const barEl = document.getElementById("profile-xp-bar");
+
+        if (xpEl) xpEl.textContent = xp % 100;
+        if (levelEl) levelEl.textContent = Math.floor(xp / 100) + 1;
+        if (barEl) barEl.style.width = (xp % 100) + "%";
+    }
 }
+
+// --- 2. ПЕРЕКЛЮЧЕНИЕ НА ГЛАВНУЮ ---
 function showMain() {
     const mainSection = document.getElementById("main-section");
     const profileSection = document.getElementById("profile-section");
@@ -334,7 +340,7 @@ function showMain() {
 
     if (profileSection) profileSection.style.display = "none";
     
-    // Принудительно возвращаем сетку в 2 колонки и отступы из твоих CSS-стилей
+    // Возвращаем главной странице сетку ИМЕННО в 2 колонки
     if (mainSection) {
         mainSection.style.display = "grid";
         mainSection.style.gridTemplateColumns = "repeat(2, 1fr)";
@@ -344,6 +350,24 @@ function showMain() {
     // Подсветка кнопок
     if (btnHome) btnHome.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
     if (btnProfile) btnProfile.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
+}
+
+// --- 3. ПЕРЕКЛЮЧЕНИЕ НА ПРОФИЛЬ ---
+function showProfile() {
+    const mainSection = document.getElementById("main-section");
+    const profileSection = document.getElementById("profile-section");
+    const btnHome = document.getElementById("btn-home");
+    const btnProfile = document.getElementById("btn-profile");
+
+    if (mainSection) mainSection.style.display = "none";
+    if (profileSection) profileSection.style.display = "block";
+
+    // Безопасно обновляем статистику
+    updateProfileStats();
+
+    // Подсветка кнопок
+    if (btnProfile) btnProfile.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
+    if (btnHome) btnHome.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
 }
 
 function showProfile() {

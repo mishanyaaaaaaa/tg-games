@@ -334,8 +334,12 @@ function showMain() {
 
     if (profileSection) profileSection.style.display = "none";
     
-    // Явно возвращаем исходную Grid-сетку из твоих CSS-стилей
-    if (mainSection) mainSection.style.display = "grid";
+    // Принудительно возвращаем сетку в 2 колонки и отступы из твоих CSS-стилей
+    if (mainSection) {
+        mainSection.style.display = "grid";
+        mainSection.style.gridTemplateColumns = "repeat(2, 1fr)";
+        mainSection.style.gap = "20px";
+    }
 
     // Подсветка кнопок
     if (btnHome) btnHome.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";

@@ -281,31 +281,49 @@ document.querySelectorAll(".play-button").forEach(button => {
         localStorage.setItem("user_game_stats", JSON.stringify(stats));
     });
 });
+<script>
 // --- 1. ЗАГРУЗКА ДАННЫХ ИЗ TELEGRAM ---
 function loadProfileData() {
-    if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            const user = tg.initDataUnsafe.user;
-            const fullName = ((user.first_name || '') + ' ' + (user.last_name || '')).trim();
-            const displayName = fullName || user.username || "Пользователь";
-
-            // Вставляем имя, ID и аватарку в карточку профиля
-            if (document.getElementById('profile-name')) document.getElementById('profile-name').innerText = displayName;
-            if (document.getElementById('profile-id')) document.getElementById('profile-id').innerText = 'ID: ' + user.id;
-            if (document.getElementById('profile-avatar')) {
-                document.getElementById('profile-avatar').src = user.photo_url || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + user.id);
-            }
-
-            // Вставляем данные в верхнюю шапку (если есть)
-            if (document.getElementById('tg-nickname')) document.getElementById('tg-nickname').innerText = user.first_name || displayName;
-            if (document.getElementById('tg-id')) document.getElementById('tg-id').innerText = 'ID: ' + user.id;
-            if (user.photo_url && document.getElementById('tg-avatar')) {
-                document.getElementById('tg-avatar').innerHTML = `<img src="${user.photo_url}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+    try {
+        let user = null;
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                user = tg.initDataUnsafe.user;
             }
         }
+
+        // Данные пользователя или заглушка для теста в обычном браузере
+        const name = user ? ((user.first_name || '') + ' ' + (user.last_name || '')).trim() || user.username || "Пользователь" : "Пользователь";
+        const idText = user ? "ID: " + user.id : "ID: 123456789";
+        const avatarUrl = (user && user.photo_url) ? user.photo_url : "https://api.dicebear.com/7.x/bottts/svg?seed=" + (user ? user.id : "guest");
+
+        // 1. Вставляем данные в Верхнюю плашку (topBar)
+        const tgNickname = document.getElementById('tg-nickname');
+        const tgId = document.getElementById('tg-id');
+        const tgAvatar = document.getElementById('tg-avatar');
+
+        if (tgNickname) tgNickname.innerText = name;
+        if (tgId) tgId.innerText = idText;
+        if (tgAvatar) tgAvatar.innerHTML = `<img src="${avatarUrl}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+
+        // 2. Вставляем данные в Карточку Профиля (profile-section)
+        const profileName = document.getElementById('profile-name');
+        const profileId = document.getElementById('profile-id');
+        const profileAvatar = document.getElementById('profile-avatar');
+
+        if (profileName) profileName.innerText = name;
+        if (profileId) profileId.innerText = idText;
+        if (profileAvatar) {
+            if (profileAvatar.tagName === 'IMG') {
+                profileAvatar.src = avatarUrl;
+            } else {
+                profileAvatar.innerHTML = `<img src="${avatarUrl}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            }
+        }
+    } catch (err) {
+        console.error("Ошибка при загрузке профиля:", err);
     }
 }
 
@@ -314,21 +332,10 @@ function showMain() {
     const mainSection = document.getElementById("main-section");
     const profileSection = document.getElementById("profile-section");
     const topBar = document.getElementById("top-bar");
-    const btnHome = document.getElementById("btn-home");
-    const btnProfile = document.getElementById("btn-profile");
 
-    // Показываем верхние плашки и главную страницу
     if (topBar) topBar.classList.remove("hidden");
+    if (mainSection) mainSection.classList.remove("hidden");
     if (profileSection) profileSection.classList.add("hidden");
-    
-    if (mainSection) {
-        mainSection.classList.remove("hidden");
-        mainSection.removeAttribute("style");
-    }
-
-    // Подсветка кнопок
-    if (btnHome) btnHome.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
-    if (btnProfile) btnProfile.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
 }
 
 // --- 3. ПЕРЕКЛЮЧЕНИЕ НА ПРОФИЛЬ ---
@@ -337,19 +344,21 @@ function showProfile() {
     const profileSection = document.getElementById("profile-section");
     const topBar = document.getElementById("top-bar");
 
-    // Скрываем верхнюю шапку с языком и устройством!
+    // Скрываем верхнюю плашку с языком и главную секцию
     if (topBar) topBar.classList.add("hidden");
     if (mainSection) mainSection.classList.add("hidden");
     if (profileSection) profileSection.classList.remove("hidden");
 
-    // Вызываем данные Telegram и статистику
-    if (typeof loadProfileData === "function") loadProfileData();
+    // Обновляем данные профиля
+    loadProfileData();
     if (typeof updateProfileStats === "function") updateProfileStats();
 }
-    // Подсветка кнопок
-    if (btnProfile) btnProfile.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
-    if (btnHome) btnHome.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
-}
+
+// --- 4. АВТОЗАПУСК ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ---
+document.addEventListener("DOMContentLoaded", () => {
+    loadProfileData();
+    showMain();
+});
 </script>
  <div id="main-section" class=container>
  

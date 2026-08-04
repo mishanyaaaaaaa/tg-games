@@ -294,54 +294,44 @@ function showMain() {
     if (btnProfile) btnProfile.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
 }
 
-// --- 3. ПЕРЕКЛЮЧЕНИЕ НА ПРОФИЛЬ ---
+// --- ПЕРЕКЛЮЧЕНИЕ НА ПРОФИЛЬ ---
 function showProfile() {
     const mainSection = document.getElementById("main-section");
     const profileSection = document.getElementById("profile-section");
     const topBar = document.getElementById("top-bar");
     const btnHome = document.getElementById("btn-home");
     const btnProfile = document.getElementById("btn-profile");
-    const menuNav = btnProfile ? btnProfile.parentElement : null;
 
-    // Показываем профиль, НЕ скрываем topBar
-    if (mainSection) mainSection.classList.add("hidden");
-    if (profileSection) profileSection.classList.remove("hidden");
-    if (topBar) topBar.classList.remove("hidden");
+    // 1. Скрываем главную и плашку (язык + устройство)
+    if (mainSection) mainSection.style.display = "none";
+    if (topBar) topBar.style.display = "none";
 
-    // Перемещаем topBar СТРОГО ПОД кнопки меню!
-    if (topBar && menuNav) {
-        menuNav.after(topBar);
-    }
+    // 2. Показываем карточку профиля прямо под кнопками меню
+    if (profileSection) profileSection.style.display = "block";
 
-    if (typeof updateProfileStats === "function") updateProfileStats();
-
-    // Подсветка кнопок
-    if (btnProfile) btnProfile.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
-    if (btnHome) btnHome.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
+    // 3. Переключаем подсветку кнопок
+    if (btnProfile) btnProfile.style.background = "rgba(255, 215, 0, 0.1)";
+    if (btnHome) btnHome.style.background = "none";
 }
 
-// --- 4. ПЕРЕКЛЮЧЕНИЕ НА ГЛАВНУЮ ---
+// --- ПЕРЕКЛЮЧЕНИЕ НА ГЛАВНУЮ ---
 function showMain() {
     const mainSection = document.getElementById("main-section");
     const profileSection = document.getElementById("profile-section");
     const topBar = document.getElementById("top-bar");
     const btnHome = document.getElementById("btn-home");
     const btnProfile = document.getElementById("btn-profile");
-    const menuNav = btnHome ? btnHome.parentElement : null;
 
-    // Показываем главную, скрываем профиль
-    if (mainSection) mainSection.classList.remove("hidden");
-    if (profileSection) profileSection.classList.add("hidden");
-    if (topBar) topBar.classList.remove("hidden");
+    // 1. Возвращаем главную и верхний бар
+    if (mainSection) mainSection.style.display = "block";
+    if (topBar) topBar.style.display = "flex";
 
-    // Возвращаем topBar НАВЕРХ (перед меню)
-    if (topBar && menuNav) {
-        menuNav.before(topBar);
-    }
+    // 2. Скрываем профиль
+    if (profileSection) profileSection.style.display = "none";
 
-    // Подсветка кнопок
-    if (btnHome) btnHome.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
-    if (btnProfile) btnProfile.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
+    // 3. Переключаем подсветку кнопок
+    if (btnHome) btnHome.style.background = "rgba(255, 215, 0, 0.1)";
+    if (btnProfile) btnProfile.style.background = "none";
 }
 </script>
  <div id="main-section" class=container>

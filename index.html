@@ -301,17 +301,47 @@ function showProfile() {
     const topBar = document.getElementById("top-bar");
     const btnHome = document.getElementById("btn-home");
     const btnProfile = document.getElementById("btn-profile");
+    const menuNav = btnProfile ? btnProfile.parentElement : null;
 
-    // Скрываем верхнюю панель и главную, чтобы меню поднялось на самый верх!
-    if (topBar) topBar.classList.add("hidden");
+    // Показываем профиль, НЕ скрываем topBar
     if (mainSection) mainSection.classList.add("hidden");
     if (profileSection) profileSection.classList.remove("hidden");
+    if (topBar) topBar.classList.remove("hidden");
+
+    // Перемещаем topBar СТРОГО ПОД кнопки меню!
+    if (topBar && menuNav) {
+        menuNav.after(topBar);
+    }
 
     if (typeof updateProfileStats === "function") updateProfileStats();
 
     // Подсветка кнопок
     if (btnProfile) btnProfile.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
     if (btnHome) btnHome.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
+}
+
+// --- 4. ПЕРЕКЛЮЧЕНИЕ НА ГЛАВНУЮ ---
+function showMain() {
+    const mainSection = document.getElementById("main-section");
+    const profileSection = document.getElementById("profile-section");
+    const topBar = document.getElementById("top-bar");
+    const btnHome = document.getElementById("btn-home");
+    const btnProfile = document.getElementById("btn-profile");
+    const menuNav = btnHome ? btnHome.parentElement : null;
+
+    // Показываем главную, скрываем профиль
+    if (mainSection) mainSection.classList.remove("hidden");
+    if (profileSection) profileSection.classList.add("hidden");
+    if (topBar) topBar.classList.remove("hidden");
+
+    // Возвращаем topBar НАВЕРХ (перед меню)
+    if (topBar && menuNav) {
+        menuNav.before(topBar);
+    }
+
+    // Подсветка кнопок
+    if (btnHome) btnHome.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
+    if (btnProfile) btnProfile.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
 }
 </script>
  <div id="main-section" class=container>

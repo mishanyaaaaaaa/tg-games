@@ -106,48 +106,28 @@
     </div>
 </div>
 <script>
-  console.log("Скрипт профиля загружен!");
-  const tg = window.Telegram.WebApp;
-  tg.ready();
-  
-  if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    console.log("Данные пользователя найдены:", tg.initDataUnsafe.user);
-// Данные для большой карточки профиля
-    if (document.getElementById('profile-name')) {
-        document.getElementById('profile-name').innerText = tg.initDataUnsafe.user.first_name;
-    }
-    if (document.getElementById('profile-id')) {
-        document.getElementById('profile-id').innerText = 'ID: ' + tg.initDataUnsafe.user.id;
-    }
-    if (tg.initDataUnsafe.user.photo_url && document.getElementById('profile-avatar')) {
-        document.getElementById('profile-avatar').src = tg.initDataUnsafe.user.photo_url;
-    }
-    
-    // Имя
-    if (document.getElementById('tg-nickname')) {
-        document.getElementById('tg-nickname').innerText = tg.initDataUnsafe.user.first_name;
-    }
-    
-    // ID
-    if (document.getElementById('tg-id')) {
-        document.getElementById('tg-id').innerText = 'ID: ' + tg.initDataUnsafe.user.id;
-    }
+ document.addEventListener("DOMContentLoaded", function() {
+    const tg = window.Telegram.WebApp;
+    tg.ready();
 
-    // Фото профиля (если есть в Telegram, заменяем смайлик на фото)
-    if (tg.initDataUnsafe.user.photo_url && document.getElementById('tg-avatar')) {
-        document.getElementById('tg-avatar').innerHTML = `<img src="${tg.initDataUnsafe.user.photo_url}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-    }
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const user = tg.initDataUnsafe.user;
 
-} else {
-    console.log("Данные пользователя не получены. Может, открыто не в Telegram?");
-    
-    if (document.getElementById('tg-nickname')) {
-        document.getElementById('tg-nickname').innerText = 'Нет данных';
+        // 1. Заполняем верхнюю шапку на главной
+        if (document.getElementById('tg-nickname')) document.getElementById('tg-nickname').innerText = user.first_name;
+        if (document.getElementById('tg-id')) document.getElementById('tg-id').innerText = 'ID: ' + user.id;
+        if (user.photo_url && document.getElementById('tg-avatar')) {
+            document.getElementById('tg-avatar').innerHTML = `<img src="${user.photo_url}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        }
+
+        // 2. Заполняем большую карточку профиля
+        if (document.getElementById('profile-name')) document.getElementById('profile-name').innerText = user.first_name;
+        if (document.getElementById('profile-id')) document.getElementById('profile-id').innerText = 'ID: ' + user.id;
+        if (user.photo_url && document.getElementById('profile-avatar')) {
+            document.getElementById('profile-avatar').src = user.photo_url;
+        }
     }
-    if (document.getElementById('tg-id')) {
-        document.getElementById('tg-id').innerText = 'ID: Недоступен';
-    }
-}
+});
 // === ЛОГИКА КНОПКИ ЯЗЫКА И ПЕРЕВОДА ===
 
 // 1. Открытие / Закрытие меню

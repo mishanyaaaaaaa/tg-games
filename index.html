@@ -290,15 +290,6 @@ function showMain() {
     const btnHome = document.getElementById("btn-home");
     const btnProfile = document.getElementById("btn-profile");
 
-    // Показываем верхние плашки и главную страницу
-    if (topBar) topBar.classList.remove("hidden");
-    if (profileSection) profileSection.classList.add("hidden");
-    
-    if (mainSection) {
-        mainSection.classList.remove("hidden");
-        mainSection.removeAttribute("style");
-    }
-
     // Подсветка кнопок
     if (btnHome) btnHome.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
     if (btnProfile) btnProfile.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
@@ -313,9 +304,6 @@ function showProfile() {
     const btnProfile = document.getElementById("btn-profile");
 
     // Скрываем верхнюю панель и главную, чтобы меню поднялось на самый верх!
-    if (topBar) topBar.classList.add("hidden");
-    if (mainSection) mainSection.classList.add("hidden");
-    if (profileSection) profileSection.classList.remove("hidden");
 
     if (typeof updateProfileStats === "function") updateProfileStats();
 

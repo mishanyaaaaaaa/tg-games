@@ -290,6 +290,11 @@ function showMain() {
     const btnHome = document.getElementById("btn-home");
     const btnProfile = document.getElementById("btn-profile");
 
+    // Показываем ВСЁ (плашку, профиль и игры)
+    if (topBar) topBar.style.display = "flex"; 
+    if (profileSection) profileSection.style.display = "block"; 
+    if (mainSection) mainSection.style.display = "block";
+
     // Подсветка кнопок
     if (btnHome) btnHome.style.cssText = "background: rgba(255, 215, 0, 0.1); border: 1px solid #FFD700; color: #FFD700; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
     if (btnProfile) btnProfile.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
@@ -303,7 +308,12 @@ function showProfile() {
     const btnHome = document.getElementById("btn-home");
     const btnProfile = document.getElementById("btn-profile");
 
-    // Скрываем верхнюю панель и главную, чтобы меню поднялось на самый верх!
+    // Скрываем ТОЛЬКО плашку с языком и блок с играми
+    if (topBar) topBar.style.display = "none";
+    if (mainSection) mainSection.style.display = "none";
+    
+    // Профиль оставляем видимым!
+    if (profileSection) profileSection.style.display = "block";
 
     if (typeof updateProfileStats === "function") updateProfileStats();
 
@@ -380,8 +390,7 @@ function showProfile() {
  <a href=./TowerRush.html class=play-button data-i18n="open_btn">Открыть</a>
  </div>
 <!-- Секция Профиля -->
-<div id="profile-section" class="hidden" style="padding: 15px; color: #fff; font-family: sans-serif;">    
-    <!-- Шапка профиля: Аватар, Имя, ID -->
+<div id="profile-section" style="padding: 15px; color: #fff; font-family: sans-serif;">    <!-- Шапка профиля: Аватар, Имя, ID -->
     <div style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255, 215, 0, 0.2);">
         <img id="profile-avatar" src="" alt="Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 2px solid #ffd700;">
         <div>

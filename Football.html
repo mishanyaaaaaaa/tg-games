@@ -15,9 +15,9 @@
 .progress-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: #4CAF50; transition: width 0.4s ease-in-out; }
 .step { z-index: 1; font-weight: 800; color: white; font-size: 14px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
 
-/* Ворота: сузили до 82% (чтобы штанги были видны) и опустили на газон (margin-top) */
+/* Опускаем ворота: margin-top увеличен до 110px */
 .goal-net { 
-    margin-top: 60px; 
+    margin-top: 110px; 
     display: grid; 
     grid-template-columns: repeat(5, 1fr); 
     grid-template-rows: repeat(3, 1fr); 
@@ -43,8 +43,8 @@
 .cell.ball::after { content: '⚽'; font-size: 35px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 .cell.target { border-color: #FF3B30; background: rgba(255, 59, 48, 0.4); box-shadow: 0 0 15px rgba(255, 59, 48, 0.6); animation: pulse 0.2s infinite alternate; }
 
-/* Кнопка ПНУТЬ: опустили под ворота */
-.kick-btn { background: #D32F2F; color: white; border: none; padding: 15px 50px; font-size: 24px; font-weight: 900; border-radius: 30px; margin-top: 60px; text-transform: uppercase; box-shadow: 0 6px 0 #9A0007; cursor: pointer; transition: 0.1s; }
+/* Опускаем кнопку ПНУТЬ: margin-top увеличен до 80px */
+.kick-btn { background: #D32F2F; color: white; border: none; padding: 15px 50px; font-size: 24px; font-weight: 900; border-radius: 30px; margin-top: 80px; text-transform: uppercase; box-shadow: 0 6px 0 #9A0007; cursor: pointer; transition: 0.1s; }
 .kick-btn:active { transform: translateY(6px); box-shadow: none; }
 .kick-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 

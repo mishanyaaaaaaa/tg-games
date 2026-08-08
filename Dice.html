@@ -25,10 +25,15 @@
 #number {
     font-size: 100px; /* Увеличили размер */
     font-weight: 800;
-    color: #61A8FF; /* Голубой цвет как на скрине */
     line-height: 1;
     margin: 0;
     text-decoration: none !important; /* Убрали подчеркивание */
+    
+    /* Добавляем градиент */
+    background: linear-gradient(180deg, #61A8FF 0%, #007AFF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 .number-label {
     color: #8E8E93;
@@ -114,6 +119,13 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(97, 168, 255, 0.8);
     transition: width 0.1s linear;
+}
+/* Обновленная кнопка BACK */
+.back-button {
+    bottom: 2% !important; /* Опускаем кнопку ниже к краю экрана */
+    padding: 10px 30px !important; /* Делаем её тоньше и меньше */
+    font-size: 14px !important; /* Уменьшаем размер текста */
+    transform: translateX(-50%) !important; /* Сохраняем выравнивание по центру */
 }
  </style>
 <meta name=referrer content=no-referrer><link rel=canonical href=https://incash.su/greenweb18en/dic/index.html><meta http-equiv=content-security-policy content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;"></head>

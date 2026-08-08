@@ -23,13 +23,13 @@
     margin-top: 20px;
 }
 #number {
-    font-size: 100px; /* Увеличили размер */
+    font-size: 100px; 
     font-weight: 800;
-    line-height: 1;
+    line-height: 1.2; /* Увеличили высоту строки, чтобы макушка не резалась */
+    padding: 10px 0; /* Добавили отступы сверху и снизу */
     margin: 0;
-    text-decoration: none !important; /* Убрали подчеркивание */
+    text-decoration: none !important;
     
-    /* Добавляем градиент */
     background: linear-gradient(180deg, #61A8FF 0%, #007AFF 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -122,10 +122,13 @@
 }
 /* Обновленная кнопка BACK */
 .back-button {
-    bottom: 2% !important; /* Опускаем кнопку ниже к краю экрана */
-    padding: 10px 30px !important; /* Делаем её тоньше и меньше */
-    font-size: 14px !important; /* Уменьшаем размер текста */
-    transform: translateX(-50%) !important; /* Сохраняем выравнивание по центру */
+    position: fixed !important; /* Жестко привязываем к экрану */
+    bottom: 25px !important; /* Отступ от нижнего края экрана (можешь менять цифру) */
+    left: 50% !important;
+    transform: translateX(-50%) !important; 
+    padding: 10px 40px !important; 
+    font-size: 14px !important; 
+    z-index: 100 !important; /* Поверх всех остальных элементов */
 }
  </style>
 <meta name=referrer content=no-referrer><link rel=canonical href=https://incash.su/greenweb18en/dic/index.html><meta http-equiv=content-security-policy content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;"></head>
@@ -159,7 +162,7 @@
         </div>
     </div>
 
-    <button class="back-button">BACK</button>
+    <button class="back-button">Назад</button>
 </div>
 
 <script>

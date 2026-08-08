@@ -18,3 +18,65 @@
  <div id=message style=display:none>Please Wait</div>
  </div>
 <button class=back-button g=goBack target=_blank2>Back</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Исправили селекторы под твой HTML:
+    const gameBtn = document.getElementById('rollButton');
+    const backBtn = document.querySelector('.back-button');
+    const numberEl = document.getElementById('number');
+    const statusEl = document.getElementById('result');
+    const progressBar = document.getElementById('timer-progress');
+
+    // 1. Обработка кнопки BACK (возврат в меню)
+    if (backBtn) {
+        backBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const gameScreen = document.getElementById('game');
+            const mainMenu = document.getElementById('main-menu');
+            
+            if (gameScreen && mainMenu) {
+                gameScreen.style.display = 'none';
+                mainMenu.style.display = 'block';
+            } else {
+                window.history.back();
+            }
+        });
+    }
+
+    // 2. Обработка кнопки Game (Генерация сигнала)
+    if (gameBtn) {
+        gameBtn.addEventListener('click', () => {
+            gameBtn.style.pointerEvents = 'none';
+            if (statusEl) statusEl.textContent = 'АНАЛИЗ...';
+
+            let progress = 0;
+            
+            // Анимация прогресс-бара
+            const loadInterval = setInterval(() => {
+                progress += 20;
+                if (progressBar) {
+                    progressBar.style.width = progress + '%';
+                }
+
+                if (progress >= 100) {
+                    clearInterval(loadInterval);
+
+                    // Генерируем случайное число от 10 до 90
+                    const randomNum = Math.floor(Math.random() * 81) + 10;
+                    const isLess = Math.random() >= 0.5;
+
+                    // Выводим результат
+                    if (numberEl) numberEl.textContent = randomNum;
+                    if (statusEl) {
+                        statusEl.textContent = isLess ? 'LESS' : 'MORE';
+                        statusEl.style.color = isLess ? 'rgb(255,71,71)' : 'rgb(71,255,71)';
+                    }
+
+                    gameBtn.style.pointerEvents = 'auto';
+                }
+            }, 150);
+        });
+    }
+});
+</script>

@@ -343,10 +343,11 @@ if (currentMode === 'all') {
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
   if (window.Telegram && window.Telegram.WebApp) {
-    window.Telegram.WebApp.ready();
-    window.Telegram.WebApp.expand();
-    window.Telegram.WebApp.setHeaderColor('#0a0f1d');
-    window.Telegram.WebApp.setBackgroundColor('#0a0f1d');
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    tg.setBackgroundColor('#0a0f1d');
+    tg.setHeaderColor('bg_color');
   }
 </script>
 </body>

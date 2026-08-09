@@ -130,23 +130,26 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 /* Стиль оранжевой кнопки Назад в меню */
-        .back-btn {
-            display: block; 
-            box-sizing: border-box;
-            width: 100%;
-            margin-top: 25px;
-            padding: 14px 28px;
-            background: linear-gradient(135deg, #ff9900, #ff4500);
-            color: white;
-            text-decoration: none; 
-            font-size: 16px;
-            border-radius: 10px;
-            text-transform: uppercase;
-            font-weight: 800;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.3);
-            transition: transform 0.1s;
-        }
+.back-btn {
+    display: block;
+    box-sizing: border-box;
+    width: 180px; /* Сделали кнопку короче */
+    margin-top: 80px; /* Отталкиваем кнопку сильно вниз от плашки ожидания */
+    margin-bottom: 20px; /* Безопасный отступ от нижнего края экрана */
+    margin-left: auto; /* Центрируем по горизонтали */
+    margin-right: auto; /* Центрируем по горизонтали */
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #ff9900, #ff4500);
+    color: white;
+    text-decoration: none; 
+    font-size: 16px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    font-weight: 800;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(255, 153, 0, 0.3);
+    transition: transform 0.1s;
+}
 
         .back-btn:active {
             transform: scale(0.95);
@@ -174,7 +177,7 @@
     <div class="controls">
         <button id="test-action-btn">Получить сигнал</button>
         <div id="random-result">Ожидание...</div>
-<a href="https://mishanyaaaaaaa.github.io/tg-games/" class="back-btn">Назад в меню</a>
+<a href="https://mishanyaaaaaaa.github.io/tg-games/" class="back-btn">Назад</a>
     </div>
 
     <!-- 3. ЛОГИКА РАНДОМА -->

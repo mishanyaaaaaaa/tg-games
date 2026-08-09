@@ -5,7 +5,6 @@
 <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
 <title>LUD SOFT - New Mines</title>
 <style>
-    /* Базовые переменные из твоего кода */
     :root {
         --background-page: #141415;
         --background-container-primary: #1D1E20;
@@ -30,7 +29,6 @@
         user-select: none;
     }
 
-    /* Контейнер мобильного приложения */
     .app-container {
         width: 100%;
         max-width: 400px;
@@ -42,23 +40,6 @@
         box-sizing: border-box;
     }
 
-    /* Шапка */
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.95);
-        color: #000;
-        border-radius: 20px;
-        padding: 12px 16px;
-        margin-bottom: 16px;
-    }
-    .header .close { color: #0075FF; font-size: 16px; cursor: pointer; }
-    .header .title { text-align: center; line-height: 1.2; }
-    .header .title strong { display: block; font-size: 15px; }
-    .header .title span { font-size: 11px; color: #888; }
-    .header .more { color: #0075FF; font-size: 20px; font-weight: bold; }
-
     /* Логотип 1win x MINES */
     .brand-title {
         background-color: var(--background-container-primary);
@@ -68,6 +49,7 @@
         font-weight: 800;
         font-size: 18px;
         letter-spacing: 1px;
+        margin-top: 20px;
         margin-bottom: 24px;
         display: flex;
         justify-content: center;
@@ -96,7 +78,6 @@
         transition: all 0.3s ease;
     }
 
-    /* Фейковый логотип 1w на пустых ячейках */
     .cell.hidden::after {
         content: "1w";
         font-weight: 900;
@@ -201,21 +182,17 @@
         cursor: pointer;
         margin: 0 auto;
         display: block;
+        transition: opacity 0.2s;
+    }
+
+    .back-btn:active {
+        opacity: 0.8;
     }
 </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- Шапка из скриншота -->
-    <div class="header">
-        <div class="close">Закрыть</div>
-        <div class="title">
-            <strong>LUD SOFT v1.0 🍌</strong>
-            <span>мини-приложение</span>
-        </div>
-        <div class="more">💬</div>
-    </div>
 
     <!-- Заголовок -->
     <div class="brand-title">
@@ -251,11 +228,13 @@
         <span>🛡 Provably fair <b>protected</b></span>
         <span>RTP <b>98%</b></span>
     </div>
-    <button class="back-btn">Back</button>
+    
+    <!-- Кнопка Назад -->
+    <button class="back-btn" id="go-back">Назад</button>
 </div>
 
 <script>
-    // Настройки логики сигналов (Кол-во бомб : Кол-во выдаваемых звезд)
+    // Настройки логики сигналов
     const signalRules = {
         2: 7,
         3: 5,
@@ -263,12 +242,12 @@
         7: 3
     };
 
-    let currentBombs = 3; // По умолчанию выбрано 3 бомбы
+    let currentBombs = 3; 
     const grid = document.getElementById('grid');
     const bombSelector = document.getElementById('bomb-selector');
     const getSignalBtn = document.getElementById('get-signal');
+    const goBackBtn = document.getElementById('go-back');
 
-    // SVG код для красивой синей звезды
     const starSvg = `
         <svg class="star-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -281,7 +260,6 @@
         </svg>
     `;
 
-    // Инициализация сетки (25 ячеек)
     function initGrid() {
         grid.innerHTML = '';
         for (let i = 0; i < 25; i++) {
@@ -291,47 +269,41 @@
         }
     }
 
-    // Обработчик выбора количества бомб
     bombSelector.addEventListener('click', (e) => {
         if (e.target.tagName === 'BUTTON') {
-            // Убираем active у всех кнопок
             Array.from(bombSelector.children).forEach(btn => btn.classList.remove('active'));
-            // Добавляем active нажатой
             e.target.classList.add('active');
-            // Сохраняем текущее количество бомб
             currentBombs = parseInt(e.target.getAttribute('data-bombs'));
-            
-            // Очищаем сетку при смене режима
             initGrid();
         }
     });
 
-    // Обработчик кнопки "Get Signal"
     getSignalBtn.addEventListener('click', () => {
-        // Сбрасываем сетку
         initGrid();
-
         const cells = document.querySelectorAll('.cell');
         const starsToOpen = signalRules[currentBombs];
         
-        // Генерируем уникальные случайные позиции для звезд
         const positions = new Set();
         while (positions.size < starsToOpen) {
             positions.add(Math.floor(Math.random() * 25));
         }
 
-        // Анимированно расставляем звезды
         let delay = 0;
         positions.forEach(pos => {
             setTimeout(() => {
                 cells[pos].classList.remove('hidden');
                 cells[pos].innerHTML = starSvg;
             }, delay);
-            delay += 100; // Легкая задержка для эффекта поочередного появления
+            delay += 100; 
         });
     });
 
-    // Запускаем отрисовку при загрузке
+    // --- ОБНОВЛЕННАЯ ЛОГИКА КНОПКИ "НАЗАД" ---
+    goBackBtn.addEventListener('click', () => {
+        // Укажи здесь название файла твоего главного меню вместо 'index.html', если оно другое
+        window.location.href = 'index.html'; 
+    });
+
     initGrid();
 </script>
 

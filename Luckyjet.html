@@ -4,37 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucky Jet - LUD SOFT</title>
+
     <style>
+        /* Общий фон страницы (Космос) */
         body {
-            background-color: #0b0b0f; 
+            background: linear-gradient(180deg, #0d0f1d 0%, #17102e 100%);
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 50px; 
+            min-height: 100vh;
+            font-family: sans-serif;
+            padding-top: 40px;
+            color: white;
         }
+
+        /* Окно игры (обрезает шапку 1win) */
         .game-wrapper {
             width: 350px; 
-            height: 400px;
+            height: 400px; /* Видимая часть без шапки */
             border-radius: 15px;
-            overflow: hidden;
+            overflow: hidden; /* Прячет все, что вылазит за 400px */
             position: relative;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             background-color: #1a1a24;
         }
+
+        /* Сам фрейм игры внутри окна */
         iframe {
             width: 100%;
-            height: 100%;
+            height: 480px; 
+            margin-top: -65px; /* Сдвиг вверх, чтобы спрятать баланс */
             border: none; 
+            pointer-events: none; /* Блокировка кликов по игре */
+        }
+
+        /* Блок с кнопкой (вынесен ОТДЕЛЬНО от игры, чтобы не обрезался) */
+        .controls {
+            text-align: center;
+            width: 350px;
+            margin-top: 20px;
+        }
+
+        /* Стиль тестовой кнопки */
+        #test-action-btn {
+            width: 100%;
+            padding: 14px 28px;
+            font-size: 16px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #ff9900, #ff4500);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.3);
+            transition: transform 0.1s;
+        }
+
+        #test-action-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Стиль плашки с результатом */
+        #random-result {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            min-height: 25px;
+            background-color: rgba(20, 20, 35, 0.8);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 <body>
 
-    <!-- Твой скопированный фрейм -->
+    <!-- 1. ИГРА -->
     <div class="game-wrapper">
-        <iframe src="https://1play.gamedev-tech.cc/lucky/vgs/?b=75b8de8633dcfe250589e5cba8a9b9b5c74b68b94d84cc8e7293c96763b67dafc0f0f86495cf290d5619bec5e4c7e07a7a68712b16cb7dd51ceba9f3e1af27be3a95d38d968c39ce1c9dfd41700624ff522d37917a23349130fae1d25bd2cc66182b1cd0764e4a3caa87c2254a5a225113fe45185229138c73e7cf743f811d01765ffedd94fe994c88e3fee8148dddc22f1c346cf359872330d347c4.cf568485be1bdeef91d977b96acefaa5.077dee8d-c923-4c02-9bee-757573662e69&amp;exitUrl=https%3A%2F%2Fone-vv0199.com%2Fcasino&amp;language=ru&amp;pid=1win&amp;pik=019aa5d3-290c-7469-b133-89d1948a968c" allow="clipboard-write; web-share"></iframe>
+        <!-- ВСТАВЬ СВОЮ ССЫЛКУ СЮДА -->
+        <iframe src="https://1play.gamedev-tech.cc/lucky/vgs/?b=75b8de8633dcfe250589e5cba8a9b9b5c74b68b94d84cc8e7293c96763b67dafc0f0f86495cf290d5619bec5e4c7e07a7a68712b16cb7dd51ceba9f3e1af27be3a95d38d968c39ce1c9dfd41700624ff522d37917a23349130fae1d25bd2cc66182b1cd0764e4a3caa87c2254a5a225113fe45185229138c73e7cf743f811d01765ffedd94fe994c88e3fee8148dddc22f1c346cf359872330d347c4.cf568485be1bdeef91d977b96acefaa5.077dee8d-c923-4c02-9bee-757573662e69&exitUrl=https%3A%2F%2Fone-vv0199.com%2Fcasino&language=ru&pid=1win&pik=019aa5d3-290c-7469-b133-89d1948a968c" allow="clipboard-write; web-share"></iframe>
     </div>
 
+    <!-- 2. ИНТЕРФЕЙС И КНОПКА -->
+    <div class="controls">
+        <button id="test-action-btn">Получить сигнал</button>
+        <div id="random-result">Ожидание...</div>
+    </div>
+
+    <!-- 3. ЛОГИКА РАНДОМА -->
+    <script>
+        function getTestRandomResult() {
+            const chance = Math.random();
+            if (chance < 0.40) {
+               const multiplier = (Math.random() * (5.0 - 1.5) + 1.5).toFixed(2);
+               return { 
+                   success: true, 
+                   text: `Успех! Сигнал x${multiplier}`, 
+                   color: '#4CAF50' 
+               };
+            } else {
+               return { 
+                   success: false, 
+                   text: `Мимо. Ждем следующий...`, 
+                   color: '#F44336' 
+               };
+            }
+        }
+
+        document.getElementById('test-action-btn').addEventListener('click', () => {
+            const resultContainer = document.getElementById('random-result');
+            const button = document.getElementById('test-action-btn');
+            
+            button.disabled = true;
+            button.style.opacity = '0.7';
+            resultContainer.innerText = 'Анализирую...';
+            resultContainer.style.color = '#888';
+
+            setTimeout(() => {
+                const result = getTestRandomResult();
+                resultContainer.style.color = result.color;
+                resultContainer.innerText = result.text;
+                button.disabled = false;
+                button.style.opacity = '1';
+            }, 600); 
+        });
+    </script>
 </body>
 </html>

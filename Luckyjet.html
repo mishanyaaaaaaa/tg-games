@@ -5,9 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucky Jet - LUD SOFT</title>
 
+    <!-- 1. ПОДКЛЮЧАЕМ СКРИПТ ТЕЛЕГРАМА -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- 2. КРАСИМ СИСТЕМНЫЙ ФОН И ШАПКУ В ФИОЛЕТОВЫЙ -->
+    <script>
+        // Командуем Телеграму применить наши цвета
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.setBackgroundColor('#15112e');
+            window.Telegram.WebApp.setHeaderColor('#15112e');
+            window.Telegram.WebApp.expand(); // Сразу разворачиваем окно на весь экран
+        }
+    </script>
+
     <style>
-     /* Фирменный глубокий темно-фиолетовый фон в цвет игры */
-        body {
+    /* Фирменный глубокий темно-фиолетовый фон в цвет игры */
+    body {
             background: linear-gradient(180deg, #15112e 0%, #0c0919 100%) !important;
             margin: 0;
             display: flex;

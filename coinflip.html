@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0b0e14">
+  <title>Coinflip Signal</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0b0e14;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 16px;
+      overflow: hidden;
+    }
+
+    /* Шапка */
+    .header {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      background: linear-gradient(135deg, #fff 0%, #f3ba2f 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #6c757d;
+      margin-top: 4px;
+    }
+
+    /* Серия из 6 шагов */
+    .series-container {
+      width: 100%;
+      max-width: 340px;
+      background: #141822;
+      border: 1px solid #222938;
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .series-step {
+      flex: 1;
+      height: 36px;
+      background: #1a202c;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #a0aec0;
+      transition: all 0.3s ease;
+    }
+
+    .series-step.active {
+      background: linear-gradient(135deg, #f3ba2f 0%, #d49a17 100%);
+      color: #000000;
+      border-color: #f3ba2f;
+      box-shadow: 0 0 12px rgba(243, 186, 47, 0.5);
+    }
+
+    /* Зона с монетой и неоновым свечением */
+    .stage {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      perspective: 1000px;
+    }
+
+    .glow-effect {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(243, 186, 47, 0.25) 0%, rgba(11, 14, 20, 0) 70%);
+      filter: blur(15px);
+      transition: all 0.5s ease;
+      animation: pulseGlow 3s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      100% { transform: scale(1.2); opacity: 1; }
+    }
+
+    /* 3D Монета */
+    .coin {
+      width: 150px;
+      height: 150px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 2.5s cubic-bezier(0.15, 0.85, 0.35, 1.2);
+    }
+
+    .coin-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-weight: 900;
+      text-transform: uppercase;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 0, 0, 0.8);
+      border: 4px solid;
+    }
+
+    /* Золотая сторона (Орел) */
+    .coin-heads {
+      background: radial-gradient(circle, #ffe875 0%, #f3ba2f 50%, #9e720a 100%);
+      border-color: #fff1a8;
+      color: #4a3300;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
+    }
+
+    /* Серебряная сторона (Решка) */
+    .coin-tails {
+      background: radial-gradient(circle, #ffffff 0%, #bdc3c7 50%, #2c3e50 100%);
+      border-color: #ffffff;
+      color: #1a252f;
+      transform: rotateY(180deg);
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+    }
+
+    .coin-brand {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .coin-text {
+      font-size: 12px;
+      margin-top: 2px;
+      opacity: 0.85;
+      letter-spacing: 2px;
+    }
+
+    /* Результат под монетой */
+    .result-badge {
+      min-height: 42px;
+      padding: 8px 24px;
+      background: rgba(20, 24, 34, 0.8);
+      border: 1px solid #222938;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #8e9aaf;
+      transition: all 0.4s ease;
+    }
+
+    .result-badge.gold {
+      color: #f3ba2f;
+      border-color: #f3ba2f;
+      box-shadow: 0 0 15px rgba(243, 186, 47, 0.3);
+    }
+
+    .result-badge.silver {
+      color: #e2e8f0;
+      border-color: #cbd5e1;
+      box-shadow: 0 0 15px rgba(226, 232, 240, 0.3);
+    }
+
+    /* Нижний блок кнопок */
+    .controls {
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-play {
+      width: 100%;
+      height: 54px;
+      background: linear-gradient(135deg, #f3ba2f 0%, #d49a17 100%);
+      border: none;
+      border-radius: 14px;
+      color: #000000;
+      font-size: 16px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(243, 186, 47, 0.35);
+      transition: all 0.2s ease;
+    }
+
+    .btn-play:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 10px rgba(243, 186, 47, 0.2);
+    }
+
+    .btn-play:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-back {
+  width: 50%; /* Ширина кнопки (можно задать в процентах или пикселях, например: 160px) */
+  align-self: center; /* Центрирует кнопку в контейнере */
+  height: 44px;
+  background: #141822;
+  border: 1px solid #222938;
+  border-radius: 12px;
+  color: #a0aec0;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+    .btn-back:active {
+      background: #1a202c;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Заголовок -->
+  <div class="header">
+    <div class="title">COINFLIP</div>
+    <div class="subtitle">СЕРИЯ СИГНАЛОВ</div>
+  </div>
+
+  <!-- Серия из 6 шагов -->
+  <div class="series-container">
+    <div class="series-step active" id="step-1">x1.88</div>
+    <div class="series-step" id="step-2">x3.76</div>
+    <div class="series-step" id="step-3">x7.52</div>
+    <div class="series-step" id="step-4">x15.0</div>
+    <div class="series-step" id="step-5">x30.0</div>
+    <div class="series-step" id="step-6">x60.1</div>
+  </div>
+
+  <!-- Сцена с монетой -->
+  <div class="stage">
+    <div class="glow-effect" id="glow"></div>
+    <div class="coin" id="coin">
+      <!-- Лицевая сторона (ОРЕЛ - Золото) -->
+      <div class="coin-face coin-heads">
+        <div class="coin-brand">1WIN</div>
+        <div class="coin-text">ОРЁЛ</div>
+      </div>
+      <!-- Обратная сторона (РЕШКА - Серебро) -->
+      <div class="coin-face coin-tails">
+        <div class="coin-brand">1WIN</div>
+        <div class="coin-text">РЕШКА</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Текст результата -->
+  <div class="result-badge" id="result-badge">
+    НАЖМИТЕ «ПОЛУЧИТЬ СИГНАЛ»
+  </div>
+
+  <!-- Панель управления -->
+  <div class="controls">
+    <button class="btn-play" id="play-btn">Получить сигнал</button>
+    <a href="./index.html" class="btn-back" id="back-btn">Назад</a>
+  </div>
+
+  <script>
+    // Инициализация Telegram WebApp
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand();
+      tg.setBackgroundColor('#0b0e14');
+      tg.setHeaderColor('bg_color');
+    }
+
+    const coin = document.getElementById('coin');
+    const glow = document.getElementById('glow');
+    const playBtn = document.getElementById('play-btn');
+    const resultBadge = document.getElementById('result-badge');
+    
+    let currentRotation = 0;
+    let currentStep = 1;
+
+    playBtn.addEventListener('click', () => {
+      // Блокируем кнопку на время вращения
+      playBtn.disabled = true;
+      resultBadge.className = 'result-badge';
+      resultBadge.textContent = 'КРУТИМ...';
+
+      // Выбираем случайный результат (0 - Орёл, 1 - Решка)
+      const isHeads = Math.random() < 0.5;
+
+      // Добавляем минимум 4 полных оборота (1440 градусов) + точный угол остановки
+      const extraSpins = 1440;
+      const targetDegree = isHeads ? 0 : 180;
+      
+      // Накапливаем угол, чтобы монета всегда крутилась в одну сторону
+      currentRotation += extraSpins + (targetDegree - (currentRotation % 360));
+      if ((currentRotation / 180) % 2 !== (isHeads ? 0 : 1)) {
+        currentRotation += 180;
+      }
+
+      coin.style.transform = `rotateY(${currentRotation}deg)`;
+
+      // Ждем завершения анимации (2.5 секунды)
+      setTimeout(() => {
+        if (isHeads) {
+          resultBadge.textContent = 'ВЫПАЛО: ОРЁЛ';
+          resultBadge.classList.add('gold');
+          glow.style.background = 'radial-gradient(circle, rgba(243, 186, 47, 0.4) 0%, rgba(11, 14, 20, 0) 70%)';
+        } else {
+          resultBadge.textContent = 'ВЫПАЛО: РЕШКА';
+          resultBadge.classList.add('silver');
+          glow.style.background = 'radial-gradient(circle, rgba(226, 232, 240, 0.4) 0%, rgba(11, 14, 20, 0) 70%)';
+        }
+
+        // Обновляем шаги серии
+        updateSeries();
+
+        playBtn.disabled = false;
+      }, 2500);
+    });
+
+    function updateSeries() {
+      document.querySelectorAll('.series-step').forEach(step => step.classList.remove('active'));
+      document.getElementById(`step-${currentStep}`).classList.add('active');
+      
+      currentStep++;
+      if (currentStep > 6) {
+        currentStep = 1;
+      }
+    }
+  </script>
+</body>
+</html>

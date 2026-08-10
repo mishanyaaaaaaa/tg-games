@@ -308,14 +308,13 @@
 
   <script>
     // Инициализация Telegram WebApp
-    if (window.Telegram && window.Telegram.WebApp) {
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-      tg.expand();
-tg.setHeaderColor('#000000');
-      tg.setBackgroundColor('#0b0e14');
-      tg.setHeaderColor('bg_color');
-    }
+   if (window.Telegram && window.Telegram.WebApp) {
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+  tg.setHeaderColor('#000000');
+  tg.setBackgroundColor('#0b0e14');
+}
 
     const coin = document.getElementById('coin');
     const glow = document.getElementById('glow');

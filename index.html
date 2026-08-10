@@ -30,6 +30,18 @@
 .hidden {
     display: none !important;
 }
+.profile-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #0a0a0a;
+    z-index: 9999;
+    overflow-y: auto;
+    padding: 20px 10px 80px 10px;
+    box-sizing: border-box;
+}
 @keyframes snake {
     0% { clip-path: inset(0 95% 95% 0); }
     25% { clip-path: inset(0 0 95% 0); }
@@ -362,20 +374,16 @@ function showProfile() {
  <a href=./MinesNew.html class=play-button data-i18n="open_btn">Открыть</a>
  </div>
  
-<!-- Новая Секция Профиля -->
+<!-- Новый профиль -->
 <div class="profile-container hidden" id="profile-section">
-    <!-- XP -->
     <div class="xp-card">
         <div class="xp-header">
             <span>Прогресс XP</span>
             <span>120 / 500 XP</span>
         </div>
-        <div class="xp-bar-bg">
-            <div class="xp-bar-fill"></div>
-        </div>
+        <div class="xp-bar-bg"><div class="xp-bar-fill"></div></div>
     </div>
 
-    <!-- Рулетка -->
     <div class="wheel-card">
         <div class="wheel-title">Колесо Удачи</div>
         <div class="wheel-wrapper">
@@ -385,7 +393,6 @@ function showProfile() {
         <button class="spin-btn" id="spinBtn" onclick="spinWheel()">Крутить</button>
     </div>
 
-    <!-- Задания -->
     <div class="quests-card">
         <div class="quests-title">Ежедневные задания</div>
         <div id="quests-list"></div>
@@ -393,7 +400,7 @@ function showProfile() {
 </div>
 
 <script>
-    // Генерация 10 заданий
+    // Генерация заданий
     const questsList = document.getElementById('quests-list');
     if (questsList) {
         for (let i = 1; i <= 10; i++) {

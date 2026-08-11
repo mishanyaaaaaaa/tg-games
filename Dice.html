@@ -194,11 +194,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Кнопка назад (оставляем твою логику)
     const backBtn = document.querySelector('.back-button');
     if (backBtn) {
-        backBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.history.back(); // Или твоя логика переключения экранов
-        });
-    }
+    backBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Красим шапку и фон обратно в черный перед переходом
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.setHeaderColor('#000000');
+            window.Telegram.WebApp.setBackgroundColor('#000000');
+        }
+
+        window.history.back(); // Или твоя логика переключения экранов
+    });
+}
 
     if (gameBtn) {
         gameBtn.addEventListener('click', () => {

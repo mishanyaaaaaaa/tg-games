@@ -74,8 +74,6 @@ html, body {
 }
 </style></head>
 <body>
- <header>
- </header>
 <div id="game" class="penalty-game">
     <div class="multiplier-bar">
         <div class="progress-fill" id="progress-fill"></div>
@@ -121,12 +119,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressFill = document.getElementById('progress-fill');
     const backBtn = document.querySelector('.back-button');
 
-    if (backBtn) {
-        backBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.history.back();
-        });
-    }
+   if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // Возвращаем шапку и фон в черный цвет перед выходом в меню
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.setHeaderColor('#000000');
+            window.Telegram.WebApp.setBackgroundColor('#000000');
+        }
+
+        window.history.back();
+    });
+}
 
     if (kickBtn) {
         // Переменные хранятся снаружи, чтобы сохранять прогресс между кликами

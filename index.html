@@ -517,9 +517,16 @@ function showProfile() {
  <a href=./MinesNew.html class=play-button data-i18n="open_btn">Открыть</a>
  </div>
 </div>
- 
+
+
 <!-- Новый профиль -->
 <div class="profile-container hidden" id="profile-section">
+
+<div id="top-bar">
+        <button id="btn-home" onclick="showMain()">🏠 Главная</button>
+        <button id="btn-profile" onclick="showProfile()">👤 Профиль</button>
+    </div>
+
     <!-- XP Прогресс -->
     <div class="xp-card">
         <div class="xp-header">

@@ -248,6 +248,23 @@
     border: 1.5px solid #FFD700;
     color: #FFD700;
 }
+.top-stats-container { width: 90%; margin: 10px auto; color: #fff; font-family: Arial, sans-serif; }
+.live-counter-bar { display: flex; justify-content: space-between; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 10px; font-size: 13px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px; }
+.stat-item { display: flex; align-items: center; gap: 6px; }
+.live-dot { width: 8px; height: 8px; background: #ff3b30; border-radius: 50%; box-shadow: 0 0 8px #ff3b30; animation: blink 1.5s infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.stat-label { color: #8e8e93; }
+.ticker-wrapper { overflow: hidden; white-space: nowrap; background: rgba(0,0,0,0.4); border-radius: 8px; padding: 6px 0; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px; }
+.ticker-content { display: inline-flex; gap: 10px; animation: ticker-scroll 25s linear infinite; }
+@keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.ticker-item { background: rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 6px; font-size: 12px; border: 1px solid rgba(255,255,255,0.1); display: flex; gap: 6px; }
+.ticker-id { color: #ccc; }
+.ticker-amount { color: #ffd700; font-weight: bold; }
+.promo-banner { background: linear-gradient(135deg, rgba(255, 170, 0, 0.15), rgba(20, 20, 20, 0.8)); border: 1px solid rgba(255, 170, 0, 0.4); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+.promo-title { font-size: 13px; font-weight: bold; }
+.promo-code { color: #ffb703; }
+.promo-subtitle { font-size: 11px; color: #00ff66; margin-top: 2px; }
+.promo-timer { background: rgba(0,0,0,0.5); border: 1px solid rgba(255, 183, 3, 0.3); padding: 4px 10px; border-radius: 8px; color: #ffb703; font-weight: bold; font-size: 13px; }
 </style>
 
 <body> 
@@ -526,6 +543,35 @@ function showProfile() {
     if (btnHome) btnHome.style.cssText = "background: none; border: 1px solid transparent; color: #ffffff; font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 20px; font-size: 11px; white-space: nowrap;";
 }
 </script>
+<div class="top-stats-container">
+    <div class="live-counter-bar">
+        <div class="stat-item">
+            <span class="live-dot"></span>
+            <span id="onlineCount">2,840</span>
+            <span class="stat-label">играют</span>
+        </div>
+        <div class="stat-item">
+            <span>🔥</span>
+            <span id="wonCount">+164</span>
+            <span class="stat-label">выигрышей</span>
+        </div>
+    </div>
+
+    <div class="ticker-wrapper">
+        <div class="ticker-content" id="tickerContent"></div>
+    </div>
+
+    <div class="promo-banner">
+        <div class="promo-info">
+            <div class="promo-title">ПРОМОКОД: <span class="promo-code">LUDSOFT</span></div>
+            <div class="promo-subtitle">+500% К ДЕПОЗИТУ</div>
+        </div>
+        <div class="promo-timer">
+            <span>⏳</span>
+            <span id="promoTimer">15:00</span>
+        </div>
+    </div>
+</div>
  <div id="main-section" class=container>
  
  <div class=game-card>
@@ -727,4 +773,46 @@ if (canvas) {
         }, 4000);
     };
 }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Генерация бегущей строки с выигрышами в рублях
+        const tickerContent = document.getElementById('tickerContent');
+        function generateWinItem() {
+            const randomId = Math.floor(100 + Math.random() * 900);
+            const randomAmount = (Math.floor(Math.random() * 242) * 100 + 800).toLocaleString('ru-RU');
+            return `<div class="ticker-item"><span class="ticker-id">ID: ${randomId}***</span><span class="ticker-amount">+${randomAmount} ₽</span></div>`;
+        }
+        let itemsHTML = '';
+        for (let i = 0; i < 15; i++) itemsHTML += generateWinItem();
+        if (tickerContent) tickerContent.innerHTML = itemsHTML + itemsHTML;
+
+        // Динамический онлайн и счетчик побед
+        let online = 2840, wins = 164;
+        setInterval(() => {
+            online = Math.max(2500, online + (Math.floor(Math.random() * 11) - 5));
+            const onlineEl = document.getElementById('onlineCount');
+            if (onlineEl) onlineEl.innerText = online.toLocaleString('ru-RU');
+
+            if (Math.random() > 0.7) {
+                wins += 1;
+                const wonEl = document.getElementById('wonCount');
+                if (wonEl) wonEl.innerText = `+${wins}`;
+            }
+        }, 3000);
+
+        // Обратный отсчет таймера промокода
+        let timeInSeconds = 15 * 60;
+        const timerElement = document.getElementById('promoTimer');
+        const timerInterval = setInterval(() => {
+            const minutes = Math.floor(timeInSeconds / 60);
+            const seconds = timeInSeconds % 60;
+            if (timerElement) {
+                timerElement.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            if (timeInSeconds <= 0) clearInterval(timerInterval);
+            else timeInSeconds--;
+        }, 1000);
+    });
 </script>
